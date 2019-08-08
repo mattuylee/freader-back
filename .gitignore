@@ -1,0 +1,8 @@
+.vscode/
+.idea/
+
+bin/
+node_modules/
+
+$RECYCLE.BIN/
+Thumbs.db
