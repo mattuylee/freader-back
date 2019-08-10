@@ -1,8 +1,16 @@
 const express = require('express')
-const router = express.Router()
-const handleAsync = require('../handle-async')
+const handleAsync = require('../handle-async').handleAsync
 const userService = require('../../service/user').instance
+const router = express.Router()
 
+//获取用户信息
+router.get('/', (req, res) => {
+    handleAsync(userService.getUserInfo(req.headers.token, req.params.uid), res)
+})
+//更新用户信息
+router.put('/', (req, res) => {
+    handleAsync(userService.updateUserInfo(req.headers.token, req.body), res)
+})
 //登录
 router.post('/login', (req, res) => {
     handleAsync(userService.login(req.body.uid, req.body.pwd), res)
@@ -17,8 +25,7 @@ router.get('/config', (req, res) => {
 })
 //更新用户配置
 router.put('/config', (req, res) => {
-    userService.assertToken(req.headers.token).then(() => {
-        handleAsync(userService.updateConfig(req.headers.token, req.body), res)
-    }).catch(result => res.json(result))
+    handleAsync(userService.updateConfig(req.headers.token, req.body), res)
 })
+
 module.exports = router

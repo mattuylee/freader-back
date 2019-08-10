@@ -2,6 +2,7 @@
  * @class 统一请求响应体
  */
 export class Result<T = any> {
+    constructor(data?: T) { if (data) { this.data = data } }
     /** 错误代码 */
     code: number
     /** 错误内容 */
