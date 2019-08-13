@@ -1,1 +1,0 @@
-require('./bin/app.js').run()

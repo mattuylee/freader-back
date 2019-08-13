@@ -1,11 +1,13 @@
 const assert = require('assert')
+const fs = require('fs')
+const path = require('path')
 const process = require('process')
 const superAgent = require('superagent')
 const logger = require('../bin/log').logger
 
 const app = require('../bin/app')
-const testConfig = require('./test-config')
 
+var testConfig
 var token
 
 app.run().then(() => {
@@ -22,6 +24,13 @@ app.run().then(() => {
 
 /** 执行测试用例 */
 async function runTest() {
+    try {
+        testConfig = JSON.parse(fs.readFileSync(path.resolve(__dirname, './test-config.json')).toString('utf-8'))
+    } 
+    catch {
+        logger.fatal('Failed to run test: test config file not found.')
+        return
+    }
     let hostname = testConfig.host + ':' + testConfig.port + testConfig.basePath
     if (hostname.endsWith('/')) { hostname = hostname.slice(0, hostname.length - 1) }
     //执行登录，获取凭证
@@ -35,8 +44,6 @@ async function runTest() {
     })
     return
 }
-
-
 async function runTests(testcase, route = '') {
     if (!testcase || typeof testcase != 'object') { return }
     if (testcase.title) {

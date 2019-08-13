@@ -64,13 +64,13 @@ export class UserService {
         }
         let update: any = {}
         if (userinfo.nickName) {
-            if (util.validate(String(userinfo.nickName).length, { min: 0, max: 40 })){
+            if (util.validate(userinfo.nickName, { minLength: 0, maxLength: 40, valueType: 'string' })) {
                 update.nickName = userinfo.nickName
             }
             else { result.error = '昵称不能超过40个字符' }
         }
         if (userinfo.password) {
-            if (util.specifiedValidate(userinfo.password, 'password')) {
+            if (util.validate(userinfo.password, { type: 'password', valueType: 'string' })) {
                 update.password = userinfo.password
             }
             else { result.error = '密码只能是字母、数字、符号，2-18位' }
@@ -97,18 +97,16 @@ export class UserService {
     /** 注册 */
     async register(referrerToken, user: User): Promise<Result<User>> {
         let result = new Result()
-        if (!user || util.specifiedValidate(user.uid, 'name')) {
+        if (!user || util.validate(user.uid, { type: 'name' })) {
             result.error = '无效的用户名'
-            return result
         }
-        else if (!util.specifiedValidate(user.password, 'password')) {
+        else if (!util.validate(user.password, { type: 'password' })) {
             result.error = '密码只能是字母、数字、符号，2-18位'
-            return result
         }
         else if (!user.nickName || user.nickName.length > 40) {
             result.error = '昵称不能超过40个字符'
-            return result
         }
+        if (result.error) { return result }
         let referrer = await userDao.getUser({ token: referrerToken })
         if (!referrer && !await userDao.userExists()) {
             result.error = '邀请码已失效'

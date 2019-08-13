@@ -6,7 +6,11 @@ import * as util from '../util/prototype-setter';
 
 //创建新会话token
 function createToken() {
-    return require('uuid').v1().replace('-', '')
+    let token = ''
+    for (let i = 0; i < 32; ++i) {
+        token += Math.round((Math.random() * 36)).toString(36)
+    }
+    return token
 }
 
 

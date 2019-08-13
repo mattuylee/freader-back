@@ -3,12 +3,12 @@
   "version": "1.0.1",
   "private": true,
   "scripts": {
-    "test": "tsc & node ./test/index.js",
-    "build": "rm -r ./bin & tsc & node ./copy-static.js",
-    "run": "tsc & node .",
-    "start": "npm run-script build & node."
+    "test": "tsc & node ./script/test.js",
+    "start": "tsc & node .",
+    "build": "rm -r ./bin & tsc & node ./script/copy-static.js",
+    "run": "npm run-script build & node ."
   },
-  "main": "main.js",
+  "main": "./script/run.js",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "debug": "~2.6.9",
