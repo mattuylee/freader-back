@@ -6,8 +6,8 @@ import { UserConfig } from '../../domain/config';
 
 const router: Controller = {
     type: "controller",
-    description: "测试controller",
-    name: "test",
+    description: "定义用户相关的接口",
+    name: "user",
     service: UserService,
     path: "/user",
     routes: [{
@@ -20,14 +20,14 @@ const router: Controller = {
             params: [{
                 from: 'headers',
                 name: 'token',
-                validation: {}
+                validation: { valueType: 'string' }
             },
             {
                 from: 'query',
                 name: 'uid',
                 description: '用户ID',
                 type: 'string',
-                validation: {}
+                validation: { valueType: 'string' }
             }]
         },
         {
@@ -38,7 +38,7 @@ const router: Controller = {
             params: [{
                 from: 'headers',
                 name: 'token',
-                validation: {}
+                validation: { valueType: 'string' }
             },
             {
                 from: 'body',
@@ -62,14 +62,14 @@ const router: Controller = {
                 name: "uid",
                 description: "用户名",
                 type: "string",
-                validation: { type: 'name' }
+                validation: { type: 'name', valueType: 'string' }
             },
             {
                 from: "body",
                 name: "pwd",
                 description: "密码",
                 type: "string",
-                validation: { type: 'password' }
+                validation: { type: 'password', valueType: 'string' }
             }]
         }]
     },
@@ -107,7 +107,7 @@ const router: Controller = {
             params: [{
                 from: 'headers',
                 name: 'token',
-                validation: {}
+                validation: { valueType: 'string' }
             }]
         },
         {
@@ -118,7 +118,7 @@ const router: Controller = {
             params: [{
                 from: 'headers',
                 name: 'token',
-                validation: {}
+                validation: { valueType: 'string' }
             },
             {
                 from: 'body',

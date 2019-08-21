@@ -1,8 +1,9 @@
+import * as util from '../util/index'
 import { Result } from '../domain/result';
-import { User, UserGroup } from '../domain/user';
+import { User, UserGroups } from '../domain/user';
 import { UserConfig } from '../domain/config';
-import * as util from '../util/validator'
 import { instance as userDao } from '../dao/user';
+import { logger } from '../log/index'
 
 /**
  * 用户验证相关的逻辑
@@ -39,7 +40,7 @@ export class UserService {
             return result
         }
         //获取其他用户信息
-        if (user.userGroup != UserGroup[UserGroup.Admin]) {
+        if (user.userGroup != UserGroups.Admin) {
             result.error = '权限不足'
         }
         else {
@@ -116,12 +117,11 @@ export class UserService {
             result.error = '用户名已存在'
             return result
         }
-        let newUser = new User(user)  //防止客户端垃圾数据
-        if (!newUser.nickName) { newUser.nickName = newUser.uid }
-        newUser.referrer = referrer ? referrer.uid : null
-        newUser.userGroup = newUser.referrer ? UserGroup[UserGroup.User] : UserGroup[UserGroup.Admin]
-        userDao.insertUser(newUser)
-        result.data = newUser
+        if (!user.nickName) { user.nickName = user.uid }
+        user.referrer = referrer ? referrer.uid : null
+        user.userGroup = user.referrer ? UserGroups.User : UserGroups.Admin
+        userDao.insertUser(user)
+        result.data = user
         return result
     }
     /** 获取用户配置 */
@@ -139,14 +139,21 @@ export class UserService {
     /**更新用户配置 */
     async updateConfig(token: string, config: UserConfig): Promise<Result> {
         if (!config) { return new Result() }
-        config = new UserConfig(config)
         const user = await userDao.getUser({ token: token })
         const result = new Result()
         if (!user) {
             result.error = '认证失败'
             result.needLogin = true
         }
-        else { userDao.updateConfig(user.uid, config) }
+        else {
+            let updateResult = await userDao.updateConfig(user.uid, config).catch(e => {
+                logger.error(e.message)
+                throw e
+            })
+            if (!updateResult.modifiedCount) {
+                result.error = '更新配置失败'
+            }
+        }
         return result
     }
 }

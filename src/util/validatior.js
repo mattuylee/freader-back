@@ -1,11 +1,11 @@
-import * as assert from 'assert'
-import { User } from '../domain/user';
+const assert = require('assert')
 /**
  * 对数据进行验证
- * @param options 验证选项
+ * @param value 待验证的值
+ * @param {ValidateOption} options 验证选项
  * @return {boolean} 验证是否通过
  */
-export function validate(value: any, options?: ValidateOption): boolean {
+function _validate(value, options) {
     if (!options) { options = {} }
     if (options.type && options.type != 'normal') {
         return specifiedValidate(value, options.type)
@@ -14,6 +14,9 @@ export function validate(value: any, options?: ValidateOption): boolean {
         if (options.nullable) {
             assert.strictEqual((value === null || value === undefined), false)
         } //非空断言
+        else if (options.nullable && (value === null || value === undefined)) {
+            return true
+        } //如果允许为空且值为空直接返回true
         if (options.valueType !== undefined) {
             if (typeof options.valueType === 'string') {
                 if (options.valueType === 'number') {
@@ -28,9 +31,7 @@ export function validate(value: any, options?: ValidateOption): boolean {
                 assert.strictEqual(value instanceof options.valueType, true)
             } //构造函数断言
             else if (typeof options.valueType === 'object') {
-                for (const key in value) {
-                    assert.strictEqual(key in options.valueType, true)
-                }
+                assert.strictEqual(objectTypeValidate(value, options.valueType), true)
             } //对象兼容断言
             else if (Number.isNaN(options.valueType)) {
                 assert.strictEqual(Number.isNaN(options.valueType), true)
@@ -60,7 +61,6 @@ export function validate(value: any, options?: ValidateOption): boolean {
             }
             else if (value && value.length) {
                 assert.strictEqual(value.length > options.maxLength, false)
-                console.log(3)
             }
             else {
                 assert.strictEqual(String(value).length > options.maxLength, false)
@@ -77,61 +77,21 @@ export function validate(value: any, options?: ValidateOption): boolean {
 }
 
 /**
- * 验证选项
- */
-export interface ValidateOption {
-    /**
-     * 特定类型数据的验证
-     * normal 正常验证
-     * name 名称验证
-     * password 密码验证
-     */
-    type?: 'normal' | 'name' | 'password'
-    /**
-     * 类型验证，根据不同的参数类型决定行为：
-     * {string} 对value执行typeof运算，执行严格相等断言
-     * {Function} 执行构造函数断言
-     * {object} 对value执行for (let key in value) 运算，必须每一个key in options.valueType为true
-     * {NaN} 执行是否为NaN断言
-     * 其它 执行严格相等断言
-     * 注意，number类型默认可以通过string类型验证，而如果string类型的value可以正确转化为数值，也通过验证
-     */
-    valueType?: string | object | any
-    /**
-     * 是否可空，默认不可为空
-     * 注意：0, false, ''等值不被认为是空值
-     */
-    nullable?: boolean
-    /** 范围限定 */
-    max?: any
-    min?: any
-    /**
-     * 尺寸限定
-     * 如果值为null或undefined则认为长度为0
-     * 如果值具有length属性则为对length属性的限定
-     * 否则如果值的类型不是string则转化为string后计算
-     */
-    maxLength?: number
-    minLength?: number
-    /** 模式匹配规则 */
-    pattern?: RegExp
-}
-
-/**
  * @deprecated 使用@see validate() 代替
  * 验证特定类型的值
  * @param value 值
  * @param type 验证类型
+ * @return {boolean}
  */
-function specifiedValidate(value: string, type: 'name' | 'password'): boolean {
+function specifiedValidate(value, type) {
     switch (type) {
         case 'name':
-            return validate(value, {
+            return _validate(value, {
                 nullable: false,
                 pattern: /^[-_0-9a-zA-Z\u4e00-\u9fbb]{2,16}$/,
             })
         case 'password':
-            return validate(value, {
+            return _validate(value, {
                 nullable: false,
                 pattern: /^[!-~]{2,18}$/,
             })
@@ -139,3 +99,22 @@ function specifiedValidate(value: string, type: 'name' | 'password'): boolean {
             return false
     }
 }
+/**
+ * 类型兼容性检验。当待验证对象的每一个字段都存在于参考对象中且类型相同时通过验证。
+ * 验证行为是递归的，因此对于object类型会递归比对
+ * @param {object} target 待验证的对象
+ * @param {object} reference 参考对象
+ * @return {boolean} 对象是否兼容
+ */
+function objectTypeValidate(target, reference) {
+    for (const key in target) {
+        if (!(key in reference)) { return false }
+        if (typeof target[key] == 'object' && !objectTypeValidate(target[key], reference[key])) {
+            return false
+        }
+    }
+    return true
+}
+
+
+module.exports = _validate

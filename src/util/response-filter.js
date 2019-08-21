@@ -1,5 +1,7 @@
-import { User } from "../domain/user";
+import { User } from "../domain/user"
 import { logger } from '../log/index'
+import { Chapter } from "../domain/book/chapter";
+import { Book } from "../domain/book/book";
 
 //最大递归深度
 const MAX_DEPTH = 10
@@ -8,10 +10,10 @@ const MAX_DEPTH = 10
  * 对于未被过滤的对象不会进行复制，而被改变的对象将会进行浅复制。
  * 过滤器工作的关键在于 instanceof 操作符的使用，因此务必保证对象的prototype指向
  * 正确的构造函数的prototype，否则过滤动作将失效
- * @param {} data 被过滤的对象
+ * @param data 被过滤的对象
  * @return 过滤后的对象
  */
-export function filter<T>(data): T {
+function _filter(data) {
     return filterOrigin(data, 0)
 }
 
@@ -25,11 +27,19 @@ function filterOrigin(data, depth) {
     
     let copy = {}
     for (let key in data) {
+        //去除空字段
+        if (data[key] === undefined) { continue }
         //ObjectId
         if (key == '_id') { continue }
         //用户密码
         if (data instanceof User && key == 'password') { continue }
+        //书籍
+        if (data instanceof Book && (key == 'infoLevel' || key == 'lastAccessTime' || key == 'detailPageInfo'))
+        //章节资源定位信息
+        if (data instanceof Chapter && key == 'resourceInfo') { continue }
         copy[key] = filterOrigin(data[key], depth + 1)
     }
     return copy
 }
+
+module.exports = _filter

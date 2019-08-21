@@ -1,6 +1,6 @@
-import fs = require('fs')
-import path = require('path')
-import { logger } from '../log/index'
+const fs = require('fs')
+const path = require('path')
+const logger = require('../log/index').logger
 
 //全局配置
 var globalConfig = {

@@ -2,7 +2,7 @@ import { Db } from 'mongodb'
 import { db } from './index'
 import { User } from '../domain/user';
 import { UserConfig } from '../domain/config';
-import * as util from '../util/prototype-setter';
+import * as util from '../util/index';
 
 //创建新会话token
 function createToken() {
@@ -13,9 +13,9 @@ function createToken() {
     return token
 }
 
-
 const userCollection = (<Db>db).collection('user')
 const configCollection = (<Db>db).collection('uconfig')
+
 /**
  * 暴露账户相关的持久层接口
  */
@@ -58,7 +58,7 @@ export class UserDao {
     /** 统计特定条件的用户是否存在 */
     async userExists(filter?: object): Promise<boolean> {
         if (!filter) { filter = {} }
-        return Boolean(await userCollection.findOne(filter))
+        return Boolean(await userCollection.findOne(filter, { hint: { 'uid': 1 }, returnKey: true }))
     }
     /** 获取用户配置信息 */
     async getConfig(uid: string): Promise<UserConfig> {

@@ -1,10 +1,10 @@
-import { ValidateOption } from "../../util/validator";
+import { ValidateOption } from "./validator-option";
 
 /**
  * 定义controller
  */
 export interface Controller {
-    type: 'controller'
+    type?: 'controller'
     /** 名称 */
     name: string
     /** 描述说明 */

@@ -1,7 +1,7 @@
 import * as express from 'express'
 import * as fs from 'fs'
 import * as path from 'path'
-import * as util from '../util/validator'
+import * as util from '../util/index'
 import { Controller } from "../domain/types/route";
 import { logger } from '../log/index'
 import { Result } from '../domain/result';
