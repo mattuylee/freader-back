@@ -1,7 +1,7 @@
-import { User } from "../domain/user"
-import { logger } from '../log/index'
-import { Chapter } from "../domain/book/chapter";
-import { Book } from "../domain/book/book";
+const User = require("../domain/user").User
+const Chapter = require("../domain/book/chapter").Chapter
+const Book = require("../domain/book/book").Book
+const logger = require('../log/index').logger
 
 //最大递归深度
 const MAX_DEPTH = 10

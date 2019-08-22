@@ -4,7 +4,6 @@
     "basePath": "/",
     "user": "ui",
     "password": "ui",
-
     "testCases": {
         "/user": {
             "title": "用户模块",
@@ -61,6 +60,48 @@
                     "landscape": false,
                     "SHOULD_NOT": "SHOULD_NOT_VALUE",
                     "uid": "1234"
+                }
+            }
+        },
+        "/shelf": {
+            "title": "书架模块",
+            "type": "module",
+            "/": {
+                "title": "书架书籍操作",
+                "type": "route",
+                "get": {
+                    "bid": "",
+                    "gid": "0"
+                },
+                "put": {
+                    "uid": "mattuy",
+                    "bid": "bid__not__valid",
+                    "gid": "0",
+                    "cid": "abcdefgfsdltiofgf543ng42m",
+                    "chapterIndex": 0,
+                    "readProgress": 0.618,
+                    "latestReadTime": 1566438588000
+                },
+                "delete": {
+                    "bid": "bid__not__valid"
+                }
+            },
+            "/group": {
+                "title": "书架分组操作",
+                "type": "route",
+                "get": {
+                    "gid": "0"
+                },
+                "put": {
+                    "uid": "",
+                    "gid": "0",
+                    "title": "分组",
+                    "covers": null,
+                    "size": 1,
+                    "lastAccessTime": 1566438588000
+                },
+                "delete": {
+                    "gid": "0"
                 }
             }
         }

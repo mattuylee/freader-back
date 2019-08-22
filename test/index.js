@@ -86,6 +86,6 @@ function assertResult(res) {
     assert.strictEqual(res.body.error, null)
     if (res.body.token) {
         token = res.body.token
-        logger.debug('token changed', token)
+        logger.debug('token changed: ', token)
     }
 }

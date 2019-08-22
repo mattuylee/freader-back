@@ -2,7 +2,6 @@ import { ShelfBook, ShelfBookGroup } from "../domain/book/shelf";
 import { Result } from "../domain/result";
 import { instance as userDao } from "../dao/user";
 import { instance as shelfDao } from "../dao/shelf";
-import { logger } from '../log/index'
 
 export class ShelfService {
     /**
@@ -23,15 +22,13 @@ export class ShelfService {
      * @param token 会话ID
      * @param shelf 书架书籍信息
      */
-    async updateShelfBooks(token: string, shelf: ShelfBook) {
+    async updateShelfBook(token: string, shelf: ShelfBook) {
         let user = await userDao.getUser({ token: token })
         shelf.uid = user.uid
-        let updateResult = await shelfDao.updateShelfBook(shelf).catch(e => {
-            logger.error(e.message)
-            throw e
-        })
+        /**@todo 验证书籍是否存在，防止垃圾数据攻击 */
+        let updateResult = await shelfDao.updateShelfBook(shelf)
         let result = new Result()
-        if (!updateResult.modifiedCount) {
+        if (!updateResult.matchedCount && !updateResult.upsertedCount) {
             result.error = '修改书架书籍失败'
         }
         return result
@@ -43,10 +40,7 @@ export class ShelfService {
      */
     async removeShelfBook(token: string, bid: string) {
         let user = await userDao.getUser({ token: token })
-        await shelfDao.removeShelfBook(user.uid, bid).catch(e => {
-            logger.error(e.message)
-            throw e
-        })
+        await shelfDao.removeShelfBook(user.uid, bid)
         return new Result()
     }
     /**
@@ -66,14 +60,18 @@ export class ShelfService {
     async updateShelfBookGroup(token: string, group: ShelfBookGroup) {
         let user = await userDao.getUser({ token: token })
         group.uid = user.uid
-        let updateResult = await shelfDao.updateShelfBookGroup(group).catch(e => {
-            logger.error(e.message)
-            throw e
-        })
+        let updateResult = await shelfDao.updateShelfBookGroup(group)
         let result = new Result()
-        if (!updateResult.modifiedCount) {
+        if (!updateResult.matchedCount && !updateResult.upsertedCount) {
             result.error = '修改分组失败'
         }
+        else if (updateResult.upsertedCount) {
+            let groupCount = await shelfDao.countShelfBookGroup(user.uid)
+            if (groupCount > 100) {
+                shelfDao.removeShelfBookGroup(user.uid, group.gid)
+                result.error = '分组数已达上限'
+            }
+        } //新增分组，判断是否超出
         return result
     }
     /**
@@ -83,10 +81,7 @@ export class ShelfService {
      */
     async removeShelfBookGroup(token: string, gid: string) {
         let user = await userDao.getUser({ token: token })
-        await shelfDao.removeShelfBookGroup(user.uid, gid).catch(e => {
-            logger.error(e.message)
-            throw e
-        })
+        await shelfDao.removeShelfBookGroup(user.uid, gid)
         return new Result()
     }
 }

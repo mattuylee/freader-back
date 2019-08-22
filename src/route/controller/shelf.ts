@@ -39,7 +39,7 @@ const router: Controller = {
             method: 'put',
             description: '更新或添加书架书籍内容',
             token: true,
-            invoke: ShelfService.updateShelfBooks,
+            invoke: ShelfService.updateShelfBook,
             params: [{
                 from: 'headers',
                 name: 'token',

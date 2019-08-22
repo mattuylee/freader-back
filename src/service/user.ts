@@ -119,9 +119,11 @@ export class UserService {
         }
         if (!user.nickName) { user.nickName = user.uid }
         user.referrer = referrer ? referrer.uid : null
-        user.userGroup = user.referrer ? UserGroups.User : UserGroups.Admin
-        userDao.insertUser(user)
-        result.data = user
+        user.userGroup = user.referrer ? UserGroups.User : UserGroups.Admin;
+        if (!(await userDao.insertUser(user)).result.ok) {
+            result.error = '数据库错误'
+        }
+        else { result.data = user }
         return result
     }
     /** 获取用户配置 */
@@ -132,7 +134,7 @@ export class UserService {
             result.error = '认证失败'
             result.needLogin = true
         }
-        result.data = await userDao.getConfig(user.uid)
+        result.data = await userDao.getConfig((user as User).uid)
         //没有配置信息属于正常情况
         return result
     }
@@ -146,11 +148,9 @@ export class UserService {
             result.needLogin = true
         }
         else {
-            let updateResult = await userDao.updateConfig(user.uid, config).catch(e => {
-                logger.error(e.message)
-                throw e
-            })
-            if (!updateResult.modifiedCount) {
+            config.uid = user.uid
+            let updateResult = await userDao.updateConfig(user.uid, config)
+            if (!updateResult.result.ok) {
                 result.error = '更新配置失败'
             }
         }

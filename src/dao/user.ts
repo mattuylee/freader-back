@@ -4,14 +4,7 @@ import { User } from '../domain/user';
 import { UserConfig } from '../domain/config';
 import * as util from '../util/index';
 
-//创建新会话token
-function createToken() {
-    let token = ''
-    for (let i = 0; i < 32; ++i) {
-        token += Math.round((Math.random() * 36)).toString(36)
-    }
-    return token
-}
+
 
 const userCollection = (<Db>db).collection('user')
 const configCollection = (<Db>db).collection('uconfig')
@@ -22,7 +15,7 @@ const configCollection = (<Db>db).collection('uconfig')
 export class UserDao {
     /** 登录 */
     async login(uid: string, pwd: string): Promise<User> {
-        let token = createToken()
+        let token = util.createRandomCode(32)
         //登录更新token
         let result = await userCollection.findOneAndUpdate(
             { uid: uid, password: pwd },
@@ -68,7 +61,7 @@ export class UserDao {
     }
     /** 更新配置 */
     async updateConfig(uid: string, config: UserConfig) {
-        return configCollection.updateOne({ uid: uid }, { $set: config })
+        return configCollection.updateOne({ uid: uid }, { $set: config }, { upsert: true })
     }
 }
 

@@ -6,45 +6,45 @@
     "password": "ui",
 
     "testCases": {
-        "/user": {
-            "title": "用户模块",
+        "/shelf": {
+            "title": "书架模块",
             "type": "module",
             "/": {
-                "title": "用户信息",
+                "title": "书架书籍操作",
                 "type": "route",
                 "get": {
-                    "uid": "ui"
+                    "bid": "",
+                    "gid": "0"
                 },
                 "put": {
-                    "password": "ui",
-                    "nickName": "Mattuy Lee",
-                    
-                    "uid": "invalid",
-                    "userGroup": "Admin"
+                    "uid": "mattuy",
+                    "bid": "bid__not__valid",
+                    "gid": "0",
+                    "cid": "abcdefgfsdltiofgf543ng42mh",
+                    "chapterIndex": 0,
+                    "readProgress": 0.618,
+                    "latestReadTime": 1566438588000
+                },
+                "delete": {
+                    "bid": "bid__not__valid"
                 }
             },
-            "/login": {
-                "title": "登录",
+            "/group": {
+                "title": "书架分组操作",
                 "type": "route",
-                "form": {
-                    "uid": "ui",
-                    "pwd": "ui"
-                }
-            },
-           
-            "/config": {
-                "title": "用户配置",
-                "type": "route",
-                "get": {},
+                "get": {
+                    "gid": "0"
+                },
                 "put": {
-                    "darkMode": false,
-                    "fontSize": 20,
-                    "lineSpace": 1.6,
-                    "background": "#fff",
-                    "foreground": "#666",
-                    "slideMode": true,
-                    "landscape": false,
-                    "uid": "1234"
+                    "uid": "",
+                    "gid": "0",
+                    "title": "分组",
+                    "covers": null,
+                    "size": 1,
+                    "lastAccessTime": 1566438588000
+                },
+                "delete": {
+                    "gid": "0"
                 }
             }
         }

@@ -6,7 +6,6 @@ import { Controller } from "../domain/types/route";
 import { logger } from '../log/index'
 import { Result } from '../domain/result';
 import { instance as userService } from '../service/user';
-import { handleAsync } from './handle-async';
 
 const router = express.Router()
 const root = path.resolve(__dirname, 'controller')
@@ -73,7 +72,18 @@ function applyRoute(router, controller: Controller) {
                     callback = controller.service[request.invoke]
                     thisObject = controller.service
                 }
-                handleAsync(callback.apply(thisObject, params), res)
+                //调用service
+                try {
+                    let asyncResult = await callback.apply(thisObject, params)
+                    res.json(util.filterResponse(asyncResult))
+                }
+                catch (e) {
+                    let result = new Result()
+                    result.code = 500
+                    result.error = '服务器内部错误'
+                    res.json(result)
+                    logger.error(e)
+                }
             })
         }
     }
