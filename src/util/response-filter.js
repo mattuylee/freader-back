@@ -29,12 +29,10 @@ function filterOrigin(data, depth) {
     for (let key in data) {
         //去除空字段
         if (data[key] === undefined) { continue }
-        //ObjectId
-        if (key == '_id') { continue }
         //用户密码
         if (data instanceof User && key == 'password') { continue }
         //书籍
-        if (data instanceof Book && (key == 'infoLevel' || key == 'lastAccessTime' || key == 'detailPageInfo'))
+        if (data instanceof Book && (key == 'infoLevel' || key == 'lastWriteTime' || key == 'detailPageInfo' || key == 'catalogPageInfo'))
         //章节资源定位信息
         if (data instanceof Chapter && key == 'resourceInfo') { continue }
         copy[key] = filterOrigin(data[key], depth + 1)

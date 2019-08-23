@@ -10,7 +10,7 @@ export class ResourceInformation {
  * 远程数据源
  */
 export class RemoteResources {
-    Qidian = 'Qidian'     //起点
-    X23usCom = 'X23usCom' //顶点小说x23us.com
+    static readonly Qidian = 'Qidian'     //起点
+    static readonly X23usCom = 'X23usCom' //顶点小说x23us.com
 }
 type RemoteResource = string

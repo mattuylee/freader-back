@@ -104,6 +104,40 @@
                     "gid": "0"
                 }
             }
+        },
+        "/book": {
+            "title": "书籍请求模块",
+            "type": "module",
+            "/search": {
+                "title": "搜索书籍",
+                "type": "route",
+                "get": {
+                    "kw": "超神",
+                    "source": "X23usCom"
+                }
+            },
+            "/detail/__bid": {
+                "title": "获取书籍详情信息，书籍ID通过url路径传递",
+                "type": "route",
+                "get": {
+                    "source": "X23usCom"
+                }
+            },
+            "/catalog/__bid": {
+                "title": "获取书籍章节目录",
+                "type": "route",
+                "get": {
+                    "source": "X23usCom"
+                }
+            },
+            "/chapter/__cid": {
+                "title": "获取章节数据",
+                "type": "route",
+                "get": {
+                    "source": "X23usCom",
+                    "bid": null
+                }
+            }
         }
     }
 }

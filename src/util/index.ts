@@ -14,5 +14,6 @@ export const setPrototype = _setPrototype
 import _validate = require('./validatior');
 export const validate = _validate
 
-import _createRandomCode = require('./random-code');
+import { _createRandomCode, _hash } from './random-encoder'
 export const createRandomCode = _createRandomCode
+export const hash = _hash

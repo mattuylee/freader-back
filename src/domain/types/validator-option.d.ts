@@ -21,7 +21,9 @@ export interface ValidateOption {
     valueType?: string | object | any
     /**
      * 是否可空，默认不可为空
-     * 注意：0, false, ''等值不被认为是空值
+     * 此项限定优先于除禁止值限制与允许值限制之外的其它限定，当此项配置为true且value为空
+     * 时**直接返回**true而**不再进行其它验证**。
+     * 注意：只有值为null、undefined或者''时被认为是空值
      */
     nullable?: boolean
     /** 范围限定 */
@@ -35,6 +37,16 @@ export interface ValidateOption {
      */
     maxLength?: number
     minLength?: number
+    /**
+     * 允许值限定。如果value严格等于其中某一个则直接返回true，**不再进行其它验证**
+     * 此限定优先于其它限定，除禁止值限定外。
+     */
+    in?: any[]
+    /**
+     * 禁止值限定。限定value不能**严格等于**某些值。
+     * 注意，此限制**优先于**其它限定。
+     */
+    not?: any[]
     /** 模式匹配规则 */
     pattern?: RegExp
 }

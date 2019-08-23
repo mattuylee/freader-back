@@ -20,14 +20,14 @@ export class UserDao {
         let result = await userCollection.findOneAndUpdate(
             { uid: uid, password: pwd },
             { $set: { token: token } },
-            { returnOriginal: false })
+            { returnOriginal: false, projection: { _id: false } })
         return result.value
     }
     /** 获取用户信息 */
     async getUser(filter: object | string): Promise<User> {
         if (!filter) { return null }
         if (typeof filter == 'string') { filter = { uid: filter } }
-        let user = await userCollection.findOne(filter)
+        let user = await userCollection.findOne(filter, { projection: { _id: false } })
         util.setPrototype(user, User.prototype)
         return user
     }
@@ -51,11 +51,11 @@ export class UserDao {
     /** 统计特定条件的用户是否存在 */
     async userExists(filter?: object): Promise<boolean> {
         if (!filter) { filter = {} }
-        return Boolean(await userCollection.findOne(filter, { hint: { 'uid': 1 }, returnKey: true }))
+        return Boolean(await userCollection.findOne(filter, { returnKey: true }))
     }
     /** 获取用户配置信息 */
     async getConfig(uid: string): Promise<UserConfig> {
-        const config = await configCollection.findOne({ uid: uid })
+        const config = await configCollection.findOne({ uid: uid }, { projection: { _id: false } })
         util.setPrototype(config, UserConfig.prototype)
         return config
     }

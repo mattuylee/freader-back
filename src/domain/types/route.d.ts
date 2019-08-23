@@ -64,5 +64,5 @@ interface RequestParam {
     /** 参数验证机制 */
     validation: ValidateOption
     /** 参数类型，仅用于说明 */
-    type?: any
+    type: any
 }

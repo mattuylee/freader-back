@@ -19,7 +19,9 @@ export class ShelfDao {
             uid: uid,
             gid: gid,
             bid: bid
-        })).toArray()
+        }), {
+            projection: { _id: false }
+        }).toArray()
         books.forEach(book => util.setPrototype(book, Book.prototype))
         return books
     }
@@ -46,7 +48,9 @@ export class ShelfDao {
         let groups = await groupCollection.find<ShelfBookGroup>(util.trimEntity({
             uid: uid,
             gid: gid
-        })).toArray()
+        }), {
+            projection: { _id: false }
+        }).toArray()
         groups.forEach(group => util.setPrototype(group, Book.prototype))
         return groups
     }

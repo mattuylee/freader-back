@@ -11,10 +11,16 @@ function _validate(value, options) {
         return specifiedValidate(value, options.type)
     } //特定类型验证
     try {
-        if (options.nullable) {
-            assert.strictEqual((value === null || value === undefined), false)
+        if (options.not) {
+            assert.strictEqual(options.not.includes(value), false)
+        } //禁止值断言
+        if (options.in) {
+            assert.strictEqual(options.in.includes(value), true)
+        } //允许值断言
+        if (!options.nullable) {
+            assert.strictEqual((value === null || value === undefined || value === ''), false)
         } //非空断言
-        else if (options.nullable && (value === null || value === undefined)) {
+        else if (options.nullable && (value === null || value === undefined || value === '')) {
             return true
         } //如果允许为空且值为空直接返回true
         if (options.valueType !== undefined) {
