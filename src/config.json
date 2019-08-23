@@ -4,5 +4,11 @@
     "database": {
         "url": "mongodb://localhost:27017",
         "name": "freader"
+    },
+    "cron": {
+        "enabled": true,
+        "minUpdatePeriod": 68400,
+        "checkPeriod": 68400,
+        "initialTime": "1998-07-05 03:00:00 GMT+0800"
     }
 }

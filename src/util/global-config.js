@@ -14,6 +14,16 @@ const defaultGlobalConfig = {
         "url": "mongodb://localhost:27017",
         //使用的数据库名称
         "name": "freader"
+    },
+    //定时任务配置
+    "cron": {
+        "enabled": true,
+        //最小更新周期，新于此时间的更新过数据将跳过检测。单位秒
+        "minUpdatePeriod": 68400,
+        //检测周期，每次自动任务执行的时间间隔（包含任务执行时间）。下一次任务执行总是在初始时间的n个最小检测周期之后。单位秒
+        "checkPeriod": 68400,
+        //任务初始时间。任务执行时间基于此时间
+        "initialTime": "1998-07-05 03:00:00 GMT+0800"
     }
 }
 

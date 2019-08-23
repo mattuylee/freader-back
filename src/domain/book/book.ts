@@ -17,7 +17,8 @@ export class Book {
     status: BookUpdateStatus    //更新状态
     words: string               //字数（概数）
     lastUpdateTime: string      //书籍上次更新时间
-    latestChapter: Chapter      //最新章节
+    //最新章节。如果数据源无法在获取书籍信息时获取最新章节信息，允许仅最新章节名称
+    latestChapter: Chapter | string
     source: string              //数据源
     /**@region 仅服务端存储 */
     infoLevel: InfoLevel        //书籍信息完善度
@@ -73,6 +74,6 @@ type InfoLevel = string
 /** 书籍更新状态 */
 export class BookUpdateStatus {
     static readonly Serial = '连载'
-    static readonly completed = '完本'
+    static readonly Completed = '完本'
 }
 type UpdateStatus = string

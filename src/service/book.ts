@@ -62,9 +62,12 @@ export class BookService {
         }
         //从远程数据源获取最新数据
         try {
-            book = await provider.detail(bid, book.detailPageInfo)
-            await bookDao.updateBook(book)
-            result.data = book
+            let newbook = await provider.detail(bid, book.detailPageInfo)
+            if (typeof newbook.latestChapter == 'string' && book.latestChapter && book.latestChapter['title'] == newbook.latestChapter) {
+                delete newbook.latestChapter
+            } //对比最新章节的信息新旧和丰富度，如果新旧一致且丰富度降低则放弃更新最新章节信息
+            await bookDao.updateBook(newbook)
+            result.data = newbook
         }
         catch(e) {
             handleError(e, provider.name)
@@ -93,7 +96,7 @@ export class BookService {
         }
         try {
             catalog = await provider.catalog(bid, book.catalogPageInfo ? book.catalogPageInfo : book.detailPageInfo) 
-            await bookDao.updateCatalog(bid, catalog)
+            await bookDao.updateCatalog(bid, source, catalog)
             result.data = catalog
         }
         catch(e) {
@@ -135,12 +138,18 @@ export class BookService {
         return result
     }
 
-    //获取数据提供者（数据源）
-    private getResourceProvider(source: string): ResourceProvider {
+    /**
+     * 获取数据提供者（数据源）
+     * @param source 数据源名称
+     * @param noDefault 可选，给定的数据源无效时禁止返回默认数据源，默认false
+     * @return {ResourceProvider} 数据源
+     */
+    getResourceProvider(source: string, noDefault?: boolean): ResourceProvider {
         switch (String(source).toLowerCase()) {
-            default:
             case RemoteResources.X23usCom:
-            return x23usComProvider
+                return x23usComProvider
+            default:
+                return noDefault ? null : x23usComProvider
         }
     }
 }

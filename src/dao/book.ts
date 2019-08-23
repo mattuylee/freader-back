@@ -1,8 +1,8 @@
-import { Db } from "mongodb";
+import { Db, Cursor } from "mongodb";
 import { db } from '../dao/index'
-import * as util from '../util/index'
 import { Book } from "../domain/book/book";
 import { Chapter } from "../domain/book/chapter";
+import * as util from '../util/index'
 
 const bookCollection = (<Db>db).collection('book')
 const chapterCollection = (<Db>db).collection('chapter')
@@ -48,11 +48,12 @@ export class BookDao {
     /**
      * 更新章节目录。注意，已存在的章节不会被更新
      * @param bid 书籍ID
+     * @param source 数据源
      * @param catalog 书籍目录（正序）
      */
-    async updateCatalog(bid: string, catalog: Chapter[]) {
+    async updateCatalog(bid: string, source: string, catalog: Chapter[]) {
         if (!catalog || !catalog.length) { return }
-        let chapters = await chapterCollection.find({ bid: bid }, {
+        let chapters = await chapterCollection.find({ bid: bid, source: source }, {
             sort: { cid: -1 },
             projection: { cid: true }
         }).toArray()
@@ -64,8 +65,8 @@ export class BookDao {
                 inserts.push(c)
             }
         })
+        if (!inserts.length) { return }
         await chapterCollection.insertMany(inserts, { ordered: false })
-        return
     }
     /**
      * 获取章节信息
