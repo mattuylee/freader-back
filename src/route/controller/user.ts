@@ -20,6 +20,7 @@ const router: Controller = {
             params: [{
                 from: 'headers',
                 name: 'token',
+                type: 'string',
                 validation: { valueType: 'string' }
             },
             {
@@ -38,6 +39,7 @@ const router: Controller = {
             params: [{
                 from: 'headers',
                 name: 'token',
+                type: 'string',
                 validation: { valueType: 'string' }
             },
             {
@@ -107,6 +109,7 @@ const router: Controller = {
             params: [{
                 from: 'headers',
                 name: 'token',
+                type: 'string',
                 validation: { valueType: 'string' }
             }]
         },
@@ -118,6 +121,7 @@ const router: Controller = {
             params: [{
                 from: 'headers',
                 name: 'token',
+                type: 'string',
                 validation: { valueType: 'string' }
             },
             {

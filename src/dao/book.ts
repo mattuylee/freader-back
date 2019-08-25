@@ -1,6 +1,6 @@
 import { Db, Cursor } from "mongodb";
 import { db } from '../dao/index'
-import { Book } from "../domain/book/book";
+import { Book, InfoLevels } from "../domain/book/book";
 import { Chapter } from "../domain/book/chapter";
 import * as util from '../util/index'
 
@@ -26,10 +26,16 @@ export class BookDao {
      */
     updateBook(book: Book) {
         if (!book) { return }
+        let updatesOnInsert: any = {}
+        if (!InfoLevels.enough(book.infoLevel, InfoLevels.Detail)) {
+            //如果信息丰富级别低于“详情”级别，仅插入新文档时插入信息级别，防止信息级别回退
+            delete book.infoLevel
+            updatesOnInsert.infoLevel = book.infoLevel
+        }
         book.lastWriteTime = Date.now()
         return bookCollection.updateOne(
             { bid: book.bid, source: book.source },
-            { $set: util.trimEntity(book, [undefined, null, '']) },
+            { $set: util.trimEntity(book, [undefined, null, '']), $setOnInsert: updatesOnInsert },
             { upsert: true })
     }
     /**

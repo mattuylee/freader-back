@@ -127,7 +127,7 @@ export class BookService {
             return result
         }
         try {
-            chapter = await provider.chapter(chapter.bid, chapter.resourceInfo)
+            chapter = await provider.chapter(chapter.bid, cid, chapter.resourceInfo)
             await bookDao.updateChapter(chapter)
             result.data = chapter
         }

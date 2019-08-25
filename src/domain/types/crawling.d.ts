@@ -34,20 +34,14 @@ export interface ResourceProvider {
     /**
      * 获取章节内容
      * @param bid 书籍ID
+     * @param cid 章节ID
      * @param info 章节资源定位信息
      */
-    chapter(bid: string, info: ResourceInformation): Promise<Chapter>
+    chapter(bid: string, cid: string, info: ResourceInformation): Promise<Chapter>
     /**
      * 抛出异常
      * @param message 错误信息
      * @throws {ProviderError}
      */
     throwError(message: string): never
-}
-
-/**
- * 定义异常
- */
-export interface ProviderError extends Error {
-    detail?: string
 }

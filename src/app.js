@@ -2,7 +2,6 @@ require('crypto') //确保支持crypto模块
 const express = require('express')
 const path = require('path')
 const logger = require('./log/index')
-const cron = require('./service/cron').cron
 
 var app = express()
 
@@ -20,7 +19,11 @@ module.exports.run = async function () {
     //初始化路由
     app.use(globalConfig.baseRoute, require('./route/index'))
     //启用/禁用定时任务 
-    if (globalConfig.cron.enabled) { cron.enable() }
+
+    if (globalConfig.cron.enabled) {
+        const cron = require('./service/cron').cron
+        cron.enable()
+    }
     //开始监听端口
     return new Promise((resolve) => {
         app.listen(globalConfig.port, () => {

@@ -43,34 +43,31 @@ class CronService {
         let updatedCount = 0    //记录已更新数
         let exceptionCount = 0  //记录异常数
         while (await books.hasNext()) {
-            let book = await books.next()
-            const provider = bookService.getResourceProvider(book.source, true)
+            let oldbook = await books.next()
+            const provider = bookService.getResourceProvider(oldbook.source, true)
             if (!provider) {
-                logger.warn(`无效的数据源【${book.source}】\nfrom 【${book.name}】\nbid:${book.bid}】`)
+                logger.warn(`无效的数据源【${oldbook.source}】\nfrom 【${oldbook.name}】\nbid:${oldbook.bid}】`)
                 continue
             }
             try {
-                book = await provider.detail(book.bid, book.detailPageInfo)
+                let newbook = await provider.detail(oldbook.bid, oldbook.detailPageInfo)
                 //用于检查最新章节是否存在于数据库（弱检测）
                 //由于获取书籍详情时不保证更新目录信息，得到的最新章节也不保证是完整的章节数据（指
                 //有章节ID，因为章节ID可能需要有完整目录时才能计算）如果连续两次章节名称相同则无法
                 //检测出来，但这仅仅会导致一定的更新延迟，这并非不可接受的代价（除非连续很多章节同
                 //名）
-                let filter: any = { bid: book.bid, source: book.source }
-                if (typeof book.latestChapter == 'string') { filter.title = book.latestChapter }
-                else if (book.latestChapter && book.latestChapter.title) { filter.title = book.latestChapter.title }
-                //完本或有新章节时更新目录
-                if (book.status == BookUpdateStatus.Completed || !filter.title || !await cronDao.getChapter(filter)) {
-                    logger.debug(`更新书籍目录【${book.name}】`)
-                    let catalog = await provider.catalog(book.bid, book.catalogPageInfo ? book.catalogPageInfo : book.detailPageInfo)
-                    if (catalog && catalog.length) {
-                        if (typeof book.latestChapter == 'string') {
-                            book.latestChapter = catalog[catalog.length - 1]
-                        } //替换最新章节为章节实体
-                        await bookDao.updateCatalog(book.bid, book.source, catalog)
-                    }
+                let filter: any = {
+                    bid: newbook.bid,
+                    source: newbook.source,
+                    title: newbook.latestChapter
                 }
-                await bookDao.updateBook(book)
+                //完本或有新章节时更新目录
+                if (newbook.status == BookUpdateStatus.Completed || !filter.title || !await cronDao.getChapter(filter)) {
+                    logger.debug(`更新书籍目录【${newbook.name}】`)
+                    let catalog = await provider.catalog(newbook.bid, newbook.catalogPageInfo ? newbook.catalogPageInfo : newbook.detailPageInfo)
+                    await bookDao.updateCatalog(newbook.bid, newbook.source, catalog)
+                }
+                await bookDao.updateBook(newbook)
                 ++updatedCount
             }
             catch (e) {

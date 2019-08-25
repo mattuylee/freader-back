@@ -18,6 +18,7 @@ const router: Controller = {
             params: [{
                 from: 'headers',
                 name: 'token',
+                type: 'string',
                 validation: {}
             },
             {
@@ -43,6 +44,7 @@ const router: Controller = {
             params: [{
                 from: 'headers',
                 name: 'token',
+                type: 'string',
                 validation: { valueType: 'string' }
             },
             {
@@ -61,13 +63,15 @@ const router: Controller = {
             params: [{
                 from: 'headers',
                 name: 'token',
+                type: 'string',
                 validation: { valueType: 'string' }
             },
             {
                 from: 'query',
                 name: 'bid',
                 description: '要删除的书架书籍的书籍ID',
-                validation: { valueType: 'string' }
+                validation: { valueType: 'string' },
+                type: 'string'
             }]
         }]
     },
@@ -81,6 +85,7 @@ const router: Controller = {
             params: [{
                 from: 'headers',
                 name: 'token',
+                type: 'string',
                 validation: { valueType: 'string' }
             },
             {
@@ -99,6 +104,7 @@ const router: Controller = {
             params: [{
                 from: 'headers',
                 name: 'token',
+                type: 'string',
                 validation: { valueType: 'string' }
             },
             {
@@ -117,6 +123,7 @@ const router: Controller = {
             params: [{
                 from: 'headers',
                 name: 'token',
+                type: 'string',
                 validation: {}
             },
             {

@@ -22,6 +22,19 @@ app.run().then(() => {
     })
 })
 
+/** 测试数据源：X23usCom */
+async function testX23usCom() {
+    const x23usCom = require('../bin/service/crawling/x23us-com').instance
+    try {
+        let books = await x23usCom.search('超神机械师', 0)
+        let catalog = await x23usCom.catalog(books[0].bid, books[0].catalogPageInfo)
+        let chapter = await x23usCom.chapter(books[0].bid, catalog[0].cid, catalog[0].resourceInfo)
+    }
+    catch (e) {
+        logger.error(e)
+    }
+}
+
 /** 执行测试用例 */
 async function runTest() {
     try {

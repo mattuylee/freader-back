@@ -7,8 +7,8 @@
     },
     "cron": {
         "enabled": true,
-        "minUpdatePeriod": 68400,
-        "checkPeriod": 68400,
+        "minUpdatePeriod": 86400,
+        "checkPeriod": 86400,
         "initialTime": "1998-07-05 03:00:00 GMT+0800"
     }
 }

@@ -33,13 +33,13 @@ export function formatTime(time, format: string) {
     let t = new Date(time)
     switch (format) {
         case 'chineseFull':
-            return `${t.getFullYear()}年${t.getMonth() + 1}月${t.getDay()}日 ${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}:${String(t.getSeconds()).padStart(2, '0')}`
+            return `${t.getFullYear()}年${t.getMonth() + 1}月${t.getDate()}日 ${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}:${String(t.getSeconds()).padStart(2, '0')}`
         case 'chineseDate':
-            return `${t.getFullYear()}年${t.getMonth() + 1}月${t.getDay()}日`
+            return `${t.getFullYear()}年${t.getMonth() + 1}月${t.getDate()}日`
         case 'englishFull':
-            return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDay()).padStart(2, '0')} ${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}:${String(t.getSeconds()).padStart(2, '0')}`
+            return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')} ${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}:${String(t.getSeconds()).padStart(2, '0')}`
         case 'englishDate':
-            return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDay()).padStart(2, '0')}`
+            return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`
         default:
             return t.toString()
     }

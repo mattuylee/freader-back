@@ -14,11 +14,10 @@ export class Book {
     category: string            //分类
     cover: string               //封面
     intro: string               //简介
-    status: BookUpdateStatus    //更新状态
+    status: UpdateStatus        //更新状态
     words: string               //字数（概数）
     lastUpdateTime: string      //书籍上次更新时间
-    //最新章节。如果数据源无法在获取书籍信息时获取最新章节信息，允许仅最新章节名称
-    latestChapter: Chapter | string
+    latestChapter: string       //最新章节
     source: string              //数据源
     /**@region 仅服务端存储 */
     infoLevel: InfoLevel        //书籍信息完善度
