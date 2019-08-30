@@ -32,6 +32,7 @@ export class BookDao {
             delete book.infoLevel
             updatesOnInsert.infoLevel = book.infoLevel
         }
+        else { updatesOnInsert = undefined }
         book.lastWriteTime = Date.now()
         return bookCollection.updateOne(
             { bid: book.bid, source: book.source },

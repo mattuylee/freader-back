@@ -18,17 +18,16 @@ module.exports.run = async function () {
     await require('./dao/index').init()
     //初始化路由
     app.use(globalConfig.baseRoute, require('./route/index'))
-    //启用/禁用定时任务 
-
-    if (globalConfig.cron.enabled) {
-        const cron = require('./service/cron').cron
-        cron.enable()
-    }
     //开始监听端口
-    return new Promise((resolve) => {
+    await new Promise((resolve) => {
         app.listen(globalConfig.port, () => {
             logger.logger.info(`application is listening on port ${globalConfig.port}!`)
             resolve()
         })
     })
+    //启用/禁用定时任务 
+    if (globalConfig.cron.enabled) {
+        const cron = require('./service/cron').cron
+        cron.enable()
+    }
 }

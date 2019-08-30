@@ -1,50 +1,20 @@
 {
-    "host": "localhost",
-    "port": "3280",
+    "host": "mattuy.top",
+    "port": "3727",
     "basePath": "/",
     "user": "ui",
     "password": "ui",
 
     "testCases": {
-        "/shelf": {
-            "title": "书架模块",
+        "/book": {
+            "title": "书籍请求模块",
             "type": "module",
-            "/": {
-                "title": "书架书籍操作",
+            "/search": {
+                "title": "搜索书籍",
                 "type": "route",
                 "get": {
-                    "bid": "",
-                    "gid": "0"
-                },
-                "put": {
-                    "uid": "mattuy",
-                    "bid": "bid__not__valid",
-                    "gid": "0",
-                    "cid": "abcdefgfsdltiofgf543ng42mh",
-                    "chapterIndex": 0,
-                    "readProgress": 0.618,
-                    "latestReadTime": 1566438588000
-                },
-                "delete": {
-                    "bid": "bid__not__valid"
-                }
-            },
-            "/group": {
-                "title": "书架分组操作",
-                "type": "route",
-                "get": {
-                    "gid": "0"
-                },
-                "put": {
-                    "uid": "",
-                    "gid": "0",
-                    "title": "分组",
-                    "covers": null,
-                    "size": 1,
-                    "lastAccessTime": 1566438588000
-                },
-                "delete": {
-                    "gid": "0"
+                    "kw": "超神机械师",
+                    "source": "X23usCom"
                 }
             }
         }
