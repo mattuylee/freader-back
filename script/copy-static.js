@@ -65,9 +65,11 @@ function copyDirectory(options = {}) {
             return
         }
         let destPath = path.join(options.dest, file)
-        if (!fs.existsSync(destPath) || fs.statSync(destPath).mtimeMs < fs.statSync(srcPath).mtimeMs) {
-            //复制已修改文件
+        if (!fs.existsSync(destPath)) {
             fs.mkdirSync(path.dirname(destPath), { recursive: true })
+        }
+        if (fs.statSync(destPath).mtimeMs < fs.statSync(srcPath).mtimeMs) {
+            //复制已修改文件
             fs.copyFileSync(srcPath, destPath)
         }
     })
