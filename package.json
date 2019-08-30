@@ -1,14 +1,13 @@
 {
   "name": "freader",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "tsc & node ./script/test.js",
-    "start": "tsc & node .",
-    "build": "rm -rf ./bin & tsc & node ./script/copy-static.js",
-    "run": "npm run-script build & node ."
+    "test": "node ./script/test.js",
+    "start": "npm run-script build && node .",
+    "build": "node ./script/build.js"
   },
-  "main": "./script/run.js",
+  "main": "./script/main.js",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "debug": "~2.6.9",

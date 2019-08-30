@@ -7,7 +7,10 @@ const DEST_ROOT = path.resolve(__dirname, '..', 'bin')
 
 try {
     copyStatic()
-    copyResource()
+    if (fs.existsSync(path.join(SOURCE_ROOT, 'src/config.json')) && !fs.existsSync(path.join(DEST_ROOT, 'config.json'))) {
+        //复制配置文件
+        fs.copyFileSync(path.join(SOURCE_ROOT, 'src/config.json'), path.join(DEST_ROOT, 'config.json'))
+    }
 }
 catch (e) {
     console.error('fatal: failed to copy static files.')
@@ -27,21 +30,12 @@ function copyStatic() {
         })
     }
 }
-//复制资源文件（src目录下）
-function copyResource() {
-    copyDirectory({
-        src: path.resolve(SOURCE_ROOT, './src'),
-        dest: DEST_ROOT,
-        skipScriptFile: true
-    })
-}
 
 /** 
  * 复制目录下的文件/子目录到另一个目录
  * @param options 配置选项
  * @param {string} options.src 被复制的目录（目录本身不会被复制）
  * @param {string} options.dest 复制到的目录
- * @param {boolean} options.skipScriptFile 是否跳过.js/.ts的文件，默认为false
  */
 function copyDirectory(options = {}) {
     if (!options.src) { options.src = SOURCE_ROOT }
@@ -58,10 +52,6 @@ function copyDirectory(options = {}) {
                     dest: path.join(options.dest, file)
                 }
             })
-            return
-        }
-        if (options.skipScriptFile && file.endsWith('.js') || file.endsWith('.ts')) {
-            //跳过js/ts文件
             return
         }
         let destPath = path.join(options.dest, file)

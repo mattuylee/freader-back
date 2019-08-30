@@ -5,41 +5,38 @@ const process = require('process')
 const superAgent = require('superagent')
 const logger = require('../bin/log').logger
 
-const app = require('../bin/app')
 
 var testConfig
 var token
-
-app.run().then(() => {
+var argus = {
+    run: false
+} //运行参数
+if (process.argv.length > 2) {
+    for (let i = 2; i < process.argv.length; ++i) {
+        if (/^--?run$/.test(process.argv[i])) { argus.run = true }
+    }
+}
+(async function () {
+    if (argus.run) {
+        const app = require('../bin/app')
+        await app.run()
+    }
     logger.trace('---测试开始---')
     runTest().then(() => {
-        logger.info('---测试通过---')
+        logger.info('---测试结束---')
         process.exit(0)
     }).catch(e => {
         logger.error('---测试失败---')
         logger.error(e.message ? e.message : e)
         process.exit()
     })
-})
-
-/** 测试数据源：X23usCom */
-async function testX23usCom() {
-    const x23usCom = require('../bin/service/crawling/x23us-com').instance
-    try {
-        let books = await x23usCom.search('超神机械师', 0)
-        let catalog = await x23usCom.catalog(books[0].bid, books[0].catalogPageInfo)
-        let chapter = await x23usCom.chapter(books[0].bid, catalog[0].cid, catalog[0].resourceInfo)
-    }
-    catch (e) {
-        logger.error(e)
-    }
-}
+})()
 
 /** 执行测试用例 */
 async function runTest() {
     try {
         testConfig = JSON.parse(fs.readFileSync(path.resolve(__dirname, './test-config.json')).toString('utf-8'))
-    } 
+    }
     catch {
         logger.fatal('Failed to run test: test config file not found.')
         return
@@ -75,7 +72,7 @@ async function runTests(testcase, route = '') {
             }
             logger.trace(`[${method.toUpperCase()}]${route}`)
             let sendMethod
-            if(method == 'get' || method == 'delete') {
+            if (method == 'get' || method == 'delete') {
                 sendMethod = 'query'
             }
             else { sendMethod = 'send' }
@@ -87,6 +84,19 @@ async function runTests(testcase, route = '') {
         for (const key in testcase) { await runTests(testcase[key], route + key) }
         return
     } //模块级测试用例
+}
+
+/** 测试数据源：X23usCom */
+async function testX23usCom() {
+    const x23usCom = require('../bin/service/crawling/x23us-com').instance
+    try {
+        let books = await x23usCom.search('超神机械师', 0)
+        let catalog = await x23usCom.catalog(books[0].bid, books[0].catalogPageInfo)
+        let chapter = await x23usCom.chapter(books[0].bid, catalog[0].cid, catalog[0].resourceInfo)
+    }
+    catch (e) {
+        logger.error(e)
+    }
 }
 
 
