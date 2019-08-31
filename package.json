@@ -5,7 +5,8 @@
   "scripts": {
     "test": "node ./script/test.js",
     "start": "npm run-script build && node .",
-    "build": "node ./script/build.js"
+    "build": "tsc && node ./script/copy-static.js",
+    "rebuild": "if [ -e ./bin ]; then rm -rf ./bin fi && npm run-script build"
   },
   "main": "./script/main.js",
   "dependencies": {

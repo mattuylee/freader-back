@@ -26,18 +26,18 @@ export class BookDao {
      */
     updateBook(book: Book) {
         if (!book) { return }
+        let update = {
+            $set: util.trimEntity(book, [undefined, null, ''])
+        }
         let updatesOnInsert: any = {}
         if (!InfoLevels.enough(book.infoLevel, InfoLevels.Detail)) {
             //如果信息丰富级别低于“详情”级别，仅插入新文档时插入信息级别，防止信息级别回退
             delete book.infoLevel
             updatesOnInsert.infoLevel = book.infoLevel
+            update['$setOnInsert'] = updatesOnInsert
         }
-        else { updatesOnInsert = undefined }
         book.lastWriteTime = Date.now()
-        return bookCollection.updateOne(
-            { bid: book.bid, source: book.source },
-            { $set: util.trimEntity(book, [undefined, null, '']), $setOnInsert: updatesOnInsert },
-            { upsert: true })
+        return bookCollection.updateOne({ bid: book.bid, source: book.source }, update, { upsert: true })
     }
     /**
      * 获取章节列表

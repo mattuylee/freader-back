@@ -28,8 +28,7 @@ var defaultGlobalConfig = {
 }
 
 try {
-    let data = fs.readFileSync(path.resolve(__dirname, '..', 'config.json'))
-    let config = JSON.parse(data.toString())
+    let config = require(path.resolve(__dirname, '..', 'config.json'))
     if (config) { defaultGlobalConfig = { ...defaultGlobalConfig, ...config } }
 }
 catch(e) {

@@ -102,7 +102,7 @@ export class X23usCom implements ResourceProvider {
             if ($('td:nth-of-type(2)', trs[0]).text().trim() == '已完成') {
                 book.status = BookUpdateStatus.Completed
             }
-            else { book.status = BookUpdateStatus.Completed }
+            else { book.status = BookUpdateStatus.Serial }
             book.words = this._humanizeWordCount(Number.parseInt($('td:nth-of-type(2)', trs[1]).text()))
             book.lastUpdateTime = $('td:nth-of-type(3)', trs[1]).text().trim()
             book.cover = $('.fl a.hst img', context).attr('src').trim()
