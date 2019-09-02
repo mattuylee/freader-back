@@ -2,7 +2,7 @@ import { logger } from '../log/index'
 import { instance as cronDao } from "../dao/cron";
 import { instance as bookDao } from "../dao/book";
 import { instance as bookService } from "./book";
-import { BookUpdateStatus } from '../domain/book/book';
+import { UpdateStatus } from '../domain/book/book';
 import { globalConfig } from '../util';
 import * as util from '../util/index'
 
@@ -62,7 +62,7 @@ class CronService {
                     title: newbook.latestChapter
                 }
                 //完本或有新章节时更新目录
-                if (newbook.status == BookUpdateStatus.Completed || !filter.title || !await cronDao.getChapter(filter)) {
+                if (newbook.status == UpdateStatus.Completed || !filter.title || !await cronDao.getChapter(filter)) {
                     logger.debug(`更新书籍目录【${newbook.name}】`)
                     let catalog = await provider.catalog(newbook.bid, newbook.catalogPageInfo ? newbook.catalogPageInfo : newbook.detailPageInfo)
                     await bookDao.updateCatalog(newbook.bid, newbook.source, catalog)

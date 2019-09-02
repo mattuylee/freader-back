@@ -1,6 +1,7 @@
 {
     "baseRoute": "/",
     "port": 3280,
+    "mode": "develop",
     "database": {
         "url": "mongodb://localhost:27017",
         "name": "freader"

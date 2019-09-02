@@ -14,7 +14,7 @@ export class Book {
     category: string            //分类
     cover: string               //封面
     intro: string               //简介
-    status: UpdateStatus        //更新状态
+    status: UpdateStatus    //更新状态
     words: string               //字数（概数）
     lastUpdateTime: string      //书籍上次更新时间
     latestChapter: string       //最新章节
@@ -45,34 +45,15 @@ export class Book {
 /**
  * @enum 书籍信息完善级别
  */
-export class InfoLevels {
-    static readonly None = 'None'     //无数据
-    static readonly Search = 'Search' //仅搜索记录
-    static readonly Detail = 'Detail' //有详情数据
-    static readonly All = 'All'       //有所有数据（手动录入）
-    /**
-     * 判断信息级别是否满足特定的级别（包含相等情况）
-     * @param level 待验证的信息级别
-     * @param target 要满足的信息级别
-     * @return 是否满足
-     */
-    static enough(level: InfoLevel, target: InfoLevel): boolean {
-        if (target == InfoLevels.None) { return true }
-        if (target == InfoLevels.Search && [InfoLevels.Search, InfoLevels.Detail, InfoLevels.All].includes(level)) {
-            return true
-        }
-        if (target == InfoLevels.Detail && [InfoLevels.Detail, InfoLevels.All].includes(level)) {
-            return true
-        }
-        if (target == InfoLevels.All && level == InfoLevels.All) { return true }
-        return false
-    }
+export enum InfoLevel {
+    None = 'None',      //无数据
+    Search = 'Search',  //仅搜索记录
+    Detail = 'Detail',  //有详情数据
+    All = 'All'         //有所有数据（手动录入）
 }
-type InfoLevel = string
 
 /** 书籍更新状态 */
-export class BookUpdateStatus {
-    static readonly Serial = '连载'
-    static readonly Completed = '完本'
+export enum UpdateStatus {
+    Serial = '连载',
+    Completed = '完本'
 }
-type UpdateStatus = string

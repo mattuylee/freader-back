@@ -8,6 +8,8 @@ var defaultGlobalConfig = {
     "baseRoute": "/",
     //监听端口
     "port": 3280,
+    //日志模式
+    "mode": 'develop',
     //数据库配置
     "database": {
         //连接字符串
@@ -32,7 +34,6 @@ try {
     if (config) { defaultGlobalConfig = { ...defaultGlobalConfig, ...config } }
 }
 catch(e) {
-    console.log(e)
     logger.warn('Failed to load config file, and the default config is used.')
 }
 

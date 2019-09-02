@@ -21,4 +21,3 @@ export class UserConfig {
         landscape: false
     })
 }
-

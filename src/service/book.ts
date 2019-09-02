@@ -1,11 +1,12 @@
 import { Result } from "../domain/result";
 import { instance as bookDao } from "../dao/book";
-import { RemoteResources } from "../domain/resource-info";
+import { RemoteResource } from "../domain/resource-info";
 import { instance as x23usComProvider } from "./crawling/x23us-com";
 import { ResourceProvider } from "../domain/types/crawling";
-import { Book, InfoLevels } from "../domain/book/book";
+import { Book, InfoLevel } from "../domain/book/book";
 import { logger } from '../log/index'
 import { Chapter } from "../domain/book/chapter";
+import * as util from '../util/index'
 
 /**
  * 处理数据源抛出的异常。如果错误是数据源主动抛出（Error.name等于数据源的名称）则打印错
@@ -56,7 +57,7 @@ export class BookService {
             result.error = '书籍不存在'
             return result
         }
-        if (InfoLevels.enough(book.infoLevel, InfoLevels.Detail)) {
+        if (util.isInfoLevelEnough(book.infoLevel, InfoLevel.Detail)) {
             result.data = book
             return result
         }
@@ -146,7 +147,7 @@ export class BookService {
      */
     getResourceProvider(source: string, noDefault?: boolean): ResourceProvider {
         switch (String(source).toLowerCase()) {
-            case RemoteResources.X23usCom:
+            case RemoteResource.X23usCom:
                 return x23usComProvider
             default:
                 return noDefault ? null : x23usComProvider

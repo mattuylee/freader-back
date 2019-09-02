@@ -15,6 +15,7 @@ import _validate = require('./validatior');
 export const validate = _validate
 
 import { _createRandomCode, _hash } from './random-encoder'
+import { InfoLevel } from '../domain/book/book';
 export const createRandomCode = _createRandomCode
 export const hash = _hash
 
@@ -27,7 +28,6 @@ export const hash = _hash
  * @param format.chineseDate 中文年月日
  * @param format.englishFull YYYY-MM-DD hh:mm:ss
  * @param format.englishDate YYYY-MM-DD
- * 
  */
 export function formatTime(time, format: string) {
     let t = new Date(time)
@@ -43,4 +43,22 @@ export function formatTime(time, format: string) {
         default:
             return t.toString()
     }
+}
+
+/**
+ * 判断信息级别是否满足特定的级别（包含相等情况）
+ * @param level 待验证的信息级别
+ * @param target 要满足的信息级别
+ * @return {boolean} 是否满足
+ */
+export function isInfoLevelEnough(level: InfoLevel, target: InfoLevel): boolean {
+    if (target == InfoLevel.None) { return true }
+    if (target == InfoLevel.Search && [InfoLevel.Search, InfoLevel.Detail, InfoLevel.All].includes(level)) {
+        return true
+    }
+    if (target == InfoLevel.Detail && [InfoLevel.Detail, InfoLevel.All].includes(level)) {
+        return true
+    }
+    if (target == InfoLevel.All && level == InfoLevel.All) { return true }
+    return false
 }

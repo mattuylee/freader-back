@@ -1,6 +1,6 @@
 import * as util from '../util/index'
 import { Result } from '../domain/result';
-import { User, UserGroups } from '../domain/user';
+import { User, UserGroup } from '../domain/user';
 import { UserConfig } from '../domain/config';
 import { instance as userDao } from '../dao/user';
 import { logger } from '../log/index'
@@ -40,7 +40,7 @@ export class UserService {
             return result
         }
         //获取其他用户信息
-        if (user.userGroup != UserGroups.Admin) {
+        if (user.userGroup != UserGroup.Admin) {
             result.error = '权限不足'
         }
         else {
@@ -119,7 +119,7 @@ export class UserService {
         }
         if (!user.nickName) { user.nickName = user.uid }
         user.referrer = referrer ? referrer.uid : null
-        user.userGroup = user.referrer ? UserGroups.User : UserGroups.Admin;
+        user.userGroup = user.referrer ? UserGroup.User : UserGroup.Admin;
         if (!(await userDao.insertUser(user)).result.ok) {
             result.error = '数据库错误'
         }

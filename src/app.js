@@ -10,10 +10,16 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')))
 
 module.exports.run = async function () {
-    //配置日志级别
-    logger.useDevelop()
     //加载全局配置
     const globalConfig = require('./util/global-config')
+    //配置日志级别
+    logger.useDevelop()
+    if (/^product(ion)?$/.test(globalConfig.mode)) {
+        logger.useProduct()
+    }
+    else if (/^develop(ment)?$/.test(globalConfig.mode)) {
+        logger.useDevelop()
+    }
     //初始化数据库
     await require('./dao/index').init()
     //初始化路由

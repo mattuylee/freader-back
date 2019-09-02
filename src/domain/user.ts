@@ -14,7 +14,7 @@ export class User {
         password: '',
         nickName: '',
         referrer: '',
-        userGroup: '',
+        userGroup: '' as UserGroup,
         token: '',
     })
 }
@@ -22,8 +22,7 @@ export class User {
 /**
  * @enum 用户组
  */
-export class UserGroups {
-    static readonly User = 'User'
-    static readonly Admin = 'Admin'
+export enum UserGroup {
+    User = 'User',
+    Admin = 'Admin'
 }
-type UserGroup = string

@@ -1,6 +1,6 @@
 import { Db, Cursor } from "mongodb";
 import { db } from '../dao/index'
-import { Book, BookUpdateStatus, InfoLevels } from "../domain/book/book";
+import { Book, UpdateStatus, InfoLevel } from "../domain/book/book";
 import * as util from '../util/index'
 import { Chapter } from "../domain/book/chapter";
 
@@ -12,8 +12,8 @@ class CronDao {
     /** 获取可能需要更新数据的书籍列表 */
     getBooksNeedUpdating(): Cursor<Book> {
         return bookCollection.find<Book>({
-            status: BookUpdateStatus.Serial,
-            infoLevel: InfoLevels.Detail,
+            status: UpdateStatus.Serial,
+            infoLevel: InfoLevel.Detail,
             lastWriteTime: { $lt: Date.now() - util.globalConfig.cron.minUpdatePeriod * 1000 }
         })
     }
