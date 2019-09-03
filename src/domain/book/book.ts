@@ -1,5 +1,4 @@
 import { ResourceInformation } from "../resource-info";
-import { Chapter } from "./chapter";
 import * as util from '../../util/index'
 
 /**

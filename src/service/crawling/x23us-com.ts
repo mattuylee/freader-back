@@ -4,8 +4,8 @@ import * as superAgent from 'superagent'
 import * as iconv from 'iconv-lite'
 import { logger } from '../../log/index'
 import { ResourceProvider } from "../../domain/types/crawling";
-import { ResourceInformation, RemoteResources } from "../../domain/resource-info";
-import { Book, InfoLevels, BookUpdateStatus } from "../../domain/book/book";
+import { ResourceInformation, RemoteResource } from "../../domain/resource-info";
+import { Book, InfoLevel, UpdateStatus } from "../../domain/book/book";
 import { ProviderError } from '../../domain/exception';
 import * as util from '../../util/index'
 import { Chapter } from '../../domain/book/chapter';
@@ -16,7 +16,7 @@ require('superagent-charset')(superAgent)
 const base = "https://www.x23us.com"
 
 export class X23usCom implements ResourceProvider {
-    readonly name = RemoteResources.X23usCom
+    readonly name = RemoteResource.X23usCom
     //搜索
     async search(keyword: string, _: never) {
         //关键词转gbk
@@ -58,7 +58,7 @@ export class X23usCom implements ResourceProvider {
             detailInfo.source = this.name
             detailInfo.data = href.slice(detailPagePrefix.length)
             let book = await this.detail(null, detailInfo)
-            book.infoLevel = InfoLevels.Search
+            book.infoLevel = InfoLevel.Search
             books.push(book)
         }
         if (res.length && !books.length) {
@@ -100,9 +100,9 @@ export class X23usCom implements ResourceProvider {
             book.category = $('td:nth-of-type(1)', trs[0]).text().trim()
             book.author = $('td:nth-of-type(2)', trs[0]).text().trim()
             if ($('td:nth-of-type(2)', trs[0]).text().trim() == '已完成') {
-                book.status = BookUpdateStatus.Completed
+                book.status = UpdateStatus.Completed
             }
-            else { book.status = BookUpdateStatus.Serial }
+            else { book.status = UpdateStatus.Serial }
             book.words = this._humanizeWordCount(Number.parseInt($('td:nth-of-type(2)', trs[1]).text()))
             book.lastUpdateTime = $('td:nth-of-type(3)', trs[1]).text().trim()
             book.cover = $('.fl a.hst img', context).attr('src').trim()
@@ -119,7 +119,7 @@ export class X23usCom implements ResourceProvider {
             book.catalogPageInfo.data = catalogUrl.slice(prefix.length)
             book.detailPageInfo = info
             book.source = this.name
-            book.infoLevel = InfoLevels.Detail
+            book.infoLevel = InfoLevel.Detail
             if (bid) { book.bid = bid }
             else { book.makeId() }
         }
