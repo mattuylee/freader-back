@@ -2,6 +2,7 @@
   "name": "freader",
   "version": "1.0.0",
   "private": true,
+  "main": "./script/main.js",
   "scripts": {
     "test": "node ./script/test.js",
     "run-test": "node ./script/test.js --run",
@@ -9,7 +10,6 @@
     "build": "tsc && node ./script/copy-static.js",
     "rebuild": "if [ -e ./bin ]; then rm -rf ./bin fi && npm run-script build"
   },
-  "main": "./script/main.js",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "debug": "~2.6.9",
@@ -27,6 +27,31 @@
     "@types/mongodb": "^3.1.32",
     "@types/node": "^10.14.15",
     "@types/superagent": "^4.1.3",
-    "typescript": "^3.5.3"
+    "husky": "^3.0.5",
+    "typescript": "^3.5.3",
+    "validate-commit-msg": "^2.14.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "validate-commit-msg",
+      "pre-push": "npm run-script build"
+    }
+  },
+  "config": {
+    "validate-commit-msg": {
+      "types": ["feat", "fix", "docs", "style", "refactor", "test", "chore", "revert"],
+      "scope": {
+        "required": false,
+        "allowed": ["*"],
+        "validate": false,
+        "multiple": false
+      },
+      "warnOnFail": false,
+      "maxSubjectLength": 80,
+      "subjectPattern": ".+",
+      "subjectPatternErrorMsg": "必须填写提交信息",
+      "helpMessage": "",
+      "autoFix": false
+    }
   }
 }
