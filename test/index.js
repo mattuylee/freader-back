@@ -4,7 +4,7 @@ const path = require('path')
 const process = require('process')
 const superAgent = require('superagent')
 const logger = require('../bin/log').logger
-
+const globalConfig = require('../bin/util/index').globalConfig
 
 var testConfig
 var token
@@ -41,7 +41,13 @@ async function runTest() {
         logger.fatal('Failed to run test: test config file not found.')
         return
     }
-    let hostname = testConfig.host + ':' + testConfig.port + testConfig.basePath
+    let hostname
+    if (testConfig.host && testConfig.port) {
+        hostname = testConfig.host + ':' + testConfig.port + testConfig.basePath
+    }
+    else {
+        hostname = 'localhost:' + (testConfig.port ? testConfig.port : globalConfig.port) + testConfig.basePath
+    }
     if (hostname.endsWith('/')) { hostname = hostname.slice(0, hostname.length - 1) }
     //执行登录，获取凭证
     await superAgent.post(hostname + '/user/login').type('form').send({

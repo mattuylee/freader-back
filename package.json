@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "test": "node ./script/test.js",
+    "run-test": "node ./script/test.js --run",
     "start": "npm run-script build && node .",
     "build": "tsc && node ./script/copy-static.js",
     "rebuild": "if [ -e ./bin ]; then rm -rf ./bin fi && npm run-script build"

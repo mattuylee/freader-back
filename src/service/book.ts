@@ -146,7 +146,7 @@ export class BookService {
      * @return {ResourceProvider} 数据源
      */
     getResourceProvider(source: string, noDefault?: boolean): ResourceProvider {
-        switch (String(source).toLowerCase()) {
+        switch (String(source)) {
             case RemoteResource.X23usCom:
                 return x23usComProvider
             default:

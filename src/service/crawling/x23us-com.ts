@@ -103,7 +103,6 @@ export class X23usCom implements ResourceProvider {
                 book.status = UpdateStatus.Completed
             }
             else { book.status = UpdateStatus.Serial }
-            book.words = this._humanizeWordCount(Number.parseInt($('td:nth-of-type(2)', trs[1]).text()))
             book.lastUpdateTime = $('td:nth-of-type(3)', trs[1]).text().trim()
             book.cover = $('.fl a.hst img', context).attr('src').trim()
             if (book.cover.startsWith('/')) { book.cover = base + book.cover }
@@ -223,7 +222,7 @@ export class X23usCom implements ResourceProvider {
         let words: string
         if (count < 10) { words = count.toFixed(1).toString() }
         else { words = count.toFixed(0).toString() }
-        while (words.endsWith('0') || words.endsWith('.')) {
+        while (/\.0*$/.test(words)) {
             words = words.slice(0, words.length - 1)
         }
         return words + '万字'

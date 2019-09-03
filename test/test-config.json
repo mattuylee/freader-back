@@ -1,6 +1,6 @@
 {
-    "host": "mattuy.top",
-    "port": "3727",
+    "host": "localhost",
+    "port": null,
     "basePath": "/",
     "user": "ui",
     "password": "ui",

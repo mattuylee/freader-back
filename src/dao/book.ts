@@ -65,7 +65,7 @@ export class BookDao {
             projection: { cid: true }
         }).toArray()
         chapters = chapters.map(c => c.cid)
-        let inserts = new Array(Math.max(catalog.length - chapters.length, 0))
+        let inserts = []
         catalog.forEach((c, i) => {
             //预测章节位置并对比，不相等再查找
             if (c.cid != chapters[chapters.length - i - 1] && !chapters.includes(c.cid)) {
