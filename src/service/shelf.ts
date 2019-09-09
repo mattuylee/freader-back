@@ -25,10 +25,9 @@ export class ShelfService {
     async updateShelfBook(token: string, shelf: ShelfBook) {
         let user = await userDao.getUser({ token: token })
         shelf.uid = user.uid
-        /**@todo 验证书籍是否存在，防止垃圾数据攻击 */
         let updateResult = await shelfDao.updateShelfBook(shelf)
         let result = new Result()
-        if (!updateResult.matchedCount && !updateResult.upsertedCount) {
+        if (!updateResult.ok) {
             result.error = '修改书架书籍失败'
         }
         return result
@@ -62,7 +61,7 @@ export class ShelfService {
         group.uid = user.uid
         let updateResult = await shelfDao.updateShelfBookGroup(group)
         let result = new Result()
-        if (!updateResult.matchedCount && !updateResult.upsertedCount) {
+        if (!updateResult.result.ok) {
             result.error = '修改分组失败'
         }
         else if (updateResult.upsertedCount) {

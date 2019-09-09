@@ -1,11 +1,13 @@
 import { Db } from "mongodb";
-import { db } from './index'
-import { ShelfBook, ShelfBookGroup } from "../domain/book/shelf";
+
 import * as util from "../util";
 import { Book } from "../domain/book/book";
+import { ShelfBook, ShelfBookGroup } from "../domain/book/shelf";
+import { db } from './index'
 
 const shelfCollection = (<Db>db).collection('ubook')
 const groupCollection = (<Db>db).collection('bgroup')
+const bookCollection = (<Db>db).collection('book')
 
 export class ShelfDao {
     /**
@@ -30,10 +32,17 @@ export class ShelfDao {
      * @param shelfBook 
      */
     async updateShelfBook(shelfBook: ShelfBook) {
-        return await shelfCollection.updateOne(
+        const updateResult = await shelfCollection.findOneAndUpdate(
             { uid: shelfBook.uid, bid: shelfBook.bid },
             { $set: shelfBook },
-            { upsert: true })
+            { upsert: true, returnOriginal: true })
+        if (updateResult.ok && !updateResult.value) {
+            if (!await bookCollection.findOne({ bid: shelfBook.bid })) {
+                await shelfCollection.deleteOne({ uid: shelfBook.uid, bid: shelfBook.bid })
+                updateResult.ok = 0
+            } //书籍不存在
+        }
+        return updateResult
     }
     /**
      * 移除书架书籍
@@ -51,7 +60,12 @@ export class ShelfDao {
         }), {
             projection: { _id: false }
         }).toArray()
-        groups.forEach(group => util.setPrototype(group, Book.prototype))
+        for (let group of groups) {
+            util.setPrototype(group, Book.prototype)
+            const shelfBooks = await shelfCollection.find({ uid: uid, gid: group.gid })
+            group.size = await shelfBooks.count()
+            group.covers = (await shelfBooks.limit(4).toArray()).map((book: Book) => book.cover)
+        }
         return groups
     }
     //更新书架分组
