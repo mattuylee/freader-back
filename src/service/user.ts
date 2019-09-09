@@ -28,10 +28,10 @@ export class UserService {
      * @param token 当前会话ID
      * @param uid 要获取的用户的ID
      */
-    async getUserInfo(token: string, uid: string): Promise<Result<User>> {
+    async getUserInfo(token: string, uid?: string): Promise<Result<User>> {
         const user = await userDao.getUser({ token: token })
         let result = new Result()
-        if (!user || user.uid == uid) {
+        if (!user || !uid || user.uid == uid) {
             if (!user) {
                 result.error = '认证失败'
                 result.needLogin = true

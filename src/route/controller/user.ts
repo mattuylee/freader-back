@@ -28,7 +28,7 @@ const router: Controller = {
                 name: 'uid',
                 description: '用户ID',
                 type: 'string',
-                validation: { valueType: 'string' }
+                validation: { nullable: true, valueType: 'string' }
             }]
         },
         {

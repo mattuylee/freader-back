@@ -6,15 +6,14 @@
     "password": "ui",
 
     "testCases": {
-        "/book": {
+        "/shelf": {
             "title": "书籍请求模块",
             "type": "module",
-            "/search": {
-                "title": "搜索书籍",
+            "/group": {
+                "title": "书架分组操作",
                 "type": "route",
                 "get": {
-                    "kw": "超神机械师",
-                    "source": "X23usCom"
+                    "gid": "32"
                 }
             }
         }

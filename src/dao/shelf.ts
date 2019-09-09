@@ -62,8 +62,10 @@ export class ShelfDao {
             { upsert: true })
     }
     //删除书架分组
-    removeShelfBookGroup(uid: string, gid: string) {
-        return groupCollection.deleteOne({ uid: uid, gid: gid })
+    async removeShelfBookGroup(uid: string, gid: string) {
+        //将被删除分组的书籍移到根分组
+        await shelfCollection.updateMany({ uid: uid, gid: gid }, { $unset: { gid: true } })
+        await groupCollection.deleteOne({ uid: uid, gid: gid })
     }
     //统计用户书架分组
     countShelfBookGroup(uid: string) {
