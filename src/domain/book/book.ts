@@ -1,4 +1,4 @@
-import { ResourceInformation } from "../resource-info";
+import { ResourceInformation, RemoteResource } from "../resource-info";
 import * as util from '../../util/index'
 
 /**
@@ -13,11 +13,11 @@ export class Book {
     category: string            //分类
     cover: string               //封面
     intro: string               //简介
-    status: UpdateStatus    //更新状态
+    status: UpdateStatus        //更新状态
     words: string               //字数（概数）
     lastUpdateTime: string      //书籍上次更新时间
     latestChapter: string       //最新章节
-    source: string              //数据源
+    source: RemoteResource      //数据源
     /**@region 仅服务端存储 */
     infoLevel: InfoLevel        //书籍信息完善度
     lastWriteTime: number       //数据库上次更新时间
