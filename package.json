@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
-    "debug": "~2.6.9",
     "express": "~4.16.1",
     "iconv-lite": "^0.5.0",
     "log4js": "^4.5.1",
@@ -39,10 +38,21 @@
   },
   "config": {
     "validate-commit-msg": {
-      "types": ["feat", "fix", "docs", "style", "refactor", "test", "chore", "revert"],
+      "types": [
+        "feat",
+        "fix",
+        "docs",
+        "style",
+        "refactor",
+        "test",
+        "chore",
+        "revert"
+      ],
       "scope": {
         "required": false,
-        "allowed": ["*"],
+        "allowed": [
+          "*"
+        ],
         "validate": false,
         "multiple": false
       },
