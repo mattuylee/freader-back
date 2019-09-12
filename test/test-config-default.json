@@ -22,6 +22,11 @@
                     "userGroup": "Admin"
                 }
             },
+            "/token": {
+                "title": "更新会话ID",
+                "type": "route",
+                "put": {}
+            },
             "/login": {
                 "title": "登录",
                 "type": "route",

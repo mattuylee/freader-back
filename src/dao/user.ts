@@ -1,9 +1,9 @@
-import { Db } from 'mongodb'
-import { db } from './index'
+import { Db } from 'mongodb';
+
+import * as util from '../util/index';
 import { User } from '../domain/user';
 import { UserConfig } from '../domain/config';
-import * as util from '../util/index';
-
+import { db } from './index';
 
 
 const userCollection = (<Db>db).collection('user')
@@ -13,6 +13,16 @@ const configCollection = (<Db>db).collection('uconfig')
  * 暴露账户相关的持久层接口
  */
 export class UserDao {
+    /**
+     * 更新会话ID（token）
+     * @param _token 原token
+     * @returns 新token，失败返回原token
+     */
+    async updateToken(_token: string): Promise<string> {
+        const token = util.createRandomCode(32)
+        const res = await userCollection.updateOne({ token: _token }, { $set: { token: token } })
+        return res.result.ok ? token : _token
+    }
     /** 登录 */
     async login(uid: string, pwd: string): Promise<User> {
         let token = util.createRandomCode(32)

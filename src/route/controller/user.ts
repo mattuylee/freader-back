@@ -52,6 +52,22 @@ const router: Controller = {
         }]
     },
     {
+        path: "/token",
+        description: "更新会话ID",
+        requests: [{
+            method: "put",
+            token: true,
+            invoke: UserService.updateToken,
+            params: [{
+                from: "headers",
+                name: "token",
+                description: "旧会话ID",
+                type: "string",
+                validation: {}
+            }]
+        }]
+    },
+    {
         path: "/login",
         description: "登录",
         requests: [{

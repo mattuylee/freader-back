@@ -3,7 +3,6 @@ import { Result } from '../domain/result';
 import { User, UserGroup } from '../domain/user';
 import { UserConfig } from '../domain/config';
 import { instance as userDao } from '../dao/user';
-import { logger } from '../log/index'
 
 /**
  * 用户验证相关的逻辑
@@ -23,6 +22,15 @@ export class UserService {
         })
     }
 
+    /**
+     * 更新会话ID（token）
+     * @param 旧ID
+     */
+    async updateToken(token: string): Promise<Result> {
+        const result = new Result()
+        result.token = await userDao.updateToken(token)
+        return result
+    }
     /**
      * 获取用户信息。注意，普通用户只能获取自己的信息
      * @param token 当前会话ID

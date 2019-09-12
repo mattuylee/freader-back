@@ -6,16 +6,10 @@
     "password": "ui",
 
     "testCases": {
-        "/shelf": {
-            "title": "书籍请求模块",
-            "type": "module",
-            "/group": {
-                "title": "书架分组操作",
-                "type": "route",
-                "get": {
-                    "gid": "32"
-                }
-            }
+        "/user/token": {
+            "title": "更新会话ID",
+            "type": "route",
+            "put": {}
         }
     }
 }
