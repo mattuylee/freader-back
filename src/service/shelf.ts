@@ -1,5 +1,6 @@
-import { ShelfBook, ShelfBookGroup } from "../domain/book/shelf";
+import * as util from '../util/index';
 import { Result } from "../domain/result";
+import { ShelfBook, ShelfBookGroup } from "../domain/book/shelf";
 import { instance as userDao } from "../dao/user";
 import { instance as shelfDao } from "../dao/shelf";
 
@@ -59,6 +60,7 @@ export class ShelfService {
     async updateShelfBookGroup(token: string, group: ShelfBookGroup) {
         let user = await userDao.getUser({ token: token })
         group.uid = user.uid
+        if (!group.gid) {group.gid = util.createRandomCode(12)}
         let updateResult = await shelfDao.updateShelfBookGroup(group)
         let result = new Result()
         if (!updateResult.result.ok) {

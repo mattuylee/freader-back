@@ -25,7 +25,7 @@ function filterOrigin(data, depth) {
     }
     if (typeof data !== 'object') { return data }
     
-    let copy = {}
+    let copy = Array.isArray(data) ? [] : {}
     for (let key in data) {
         //去除空字段
         if (data[key] === undefined) { continue }

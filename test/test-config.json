@@ -6,10 +6,9 @@
     "password": "ui",
 
     "testCases": {
-        "/user/token": {
-            "title": "更新会话ID",
+        "/shelf": {
             "type": "route",
-            "put": {}
+            "get": { }
         }
     }
 }

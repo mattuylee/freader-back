@@ -71,7 +71,7 @@ export class ShelfDao {
     //更新书架分组
     updateShelfBookGroup(group: ShelfBookGroup) {
         return groupCollection.updateOne(
-            { uid: group.uid, bid: group.gid },
+            { uid: group.uid, gid: group.gid },
             { $set: group },
             { upsert: true })
     }
