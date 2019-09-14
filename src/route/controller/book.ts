@@ -38,7 +38,7 @@ const router: Controller = {
         }]
     },
     {
-        path: 'detail/:bid',
+        path: '/detail/:bid',
         requests: [{
             method: 'get',
             token: true,
