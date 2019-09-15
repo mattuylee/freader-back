@@ -64,9 +64,11 @@ export class BookService {
         //从远程数据源获取最新数据
         try {
             let newbook = await provider.detail(bid, book.detailPageInfo)
-            if (typeof newbook.latestChapter == 'string' && book.latestChapter && book.latestChapter['title'] == newbook.latestChapter) {
-                delete newbook.latestChapter
-            } //对比最新章节的信息新旧和丰富度，如果新旧一致且丰富度降低则放弃更新最新章节信息
+            if (!newbook.chapterCount) {
+                const catalog = await provider.catalog(bid, newbook.catalogPageInfo ? newbook.catalogPageInfo : newbook.detailPageInfo)
+                bookDao.updateCatalog(bid, newbook.source, catalog)
+                newbook.chapterCount = catalog.length
+            }
             await bookDao.updateBook(newbook)
             result.data = newbook
         }

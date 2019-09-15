@@ -1,5 +1,5 @@
-import { ResourceInformation, RemoteResource } from "../resource-info";
 import * as util from '../../util/index'
+import { ResourceInformation, RemoteResource } from "../resource-info";
 
 /**
  * 定义书籍主体
@@ -17,6 +17,7 @@ export class Book {
     words: string               //字数（概数）
     lastUpdateTime: string      //书籍上次更新时间
     latestChapter: string       //最新章节
+    chapterCount: number        //章节计数
     source: RemoteResource      //数据源
     /**@region 仅服务端存储 */
     infoLevel: InfoLevel        //书籍信息完善度
@@ -27,12 +28,6 @@ export class Book {
     catalogPageInfo: ResourceInformation
     /**@endregion */
 
-    /**
-     * @deprecated 不在书籍信息中存储章节数目。因为既然目录被独立出来单独存储，章
-     * 节数目应该作为目录的属性存储而非书籍。存储在书籍信息中不仅造成数据冗余且增
-     * 加更新章节信息的代价（需要同时更新章节和书籍） 
-     */
-    chapterCount: number    //章节计数
 
     /** 生成书籍ID */
     makeId(): string {

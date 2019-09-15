@@ -66,6 +66,7 @@ class CronService {
                     logger.debug(`更新书籍目录【${newbook.name}】`)
                     let catalog = await provider.catalog(newbook.bid, newbook.catalogPageInfo ? newbook.catalogPageInfo : newbook.detailPageInfo)
                     await bookDao.updateCatalog(newbook.bid, newbook.source, catalog)
+                    newbook.chapterCount = catalog.length
                 }
                 await bookDao.updateBook(newbook)
                 ++updatedCount

@@ -1,14 +1,14 @@
-import path = require('path')
-import cheerio = require('cheerio')
-import * as superAgent from 'superagent'
 import * as iconv from 'iconv-lite'
-import { logger } from '../../log/index'
-import { ResourceProvider } from "../../domain/types/crawling";
-import { ResourceInformation, RemoteResource } from "../../domain/resource-info";
-import { Book, InfoLevel, UpdateStatus } from "../../domain/book/book";
-import { ProviderError } from '../../domain/exception';
+import * as superAgent from 'superagent'
 import * as util from '../../util/index'
+import cheerio = require('cheerio')
+import path = require('path')
+import { Book, InfoLevel, UpdateStatus } from "../../domain/book/book";
 import { Chapter } from '../../domain/book/chapter';
+import { ProviderError } from '../../domain/exception';
+import { ResourceInformation, RemoteResource } from "../../domain/resource-info";
+import { ResourceProvider } from "../../domain/types/crawling";
+import { logger } from '../../log/index'
 
 //add request.Request.prototype.charset
 require('superagent-charset')(superAgent)
@@ -119,8 +119,7 @@ export class X23usCom implements ResourceProvider {
             book.detailPageInfo = info
             book.source = this.name
             book.infoLevel = InfoLevel.Detail
-            if (bid) { book.bid = bid }
-            else { book.makeId() }
+            book.bid = bid ? bid : book.makeId()
         }
         catch (e) {
             if (e instanceof ProviderError) { throw e }
