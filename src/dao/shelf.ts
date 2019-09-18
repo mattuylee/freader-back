@@ -60,12 +60,7 @@ export class ShelfDao {
         }), {
             projection: { _id: false }
         }).toArray()
-        for (let group of groups) {
-            util.setPrototype(group, Book.prototype)
-            const shelfBooks = await shelfCollection.find({ uid: uid, gid: group.gid })
-            group.size = await shelfBooks.count()
-            group.covers = (await shelfBooks.limit(4).toArray()).map((book: Book) => book.cover)
-        }
+        groups.forEach(i => util.setPrototype(i, Book.prototype))
         return groups
     }
     //更新书架分组

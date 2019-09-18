@@ -35,9 +35,9 @@ export class ShelfBookGroup {
     static readonly empty: ShelfBookGroup = Object.freeze({
         uid: '',
         gid: '',
-        size: 0,
+        size: null,
         title: '',
-        covers: [],
+        covers: null,
         lastAccessTime: 0
     })
 }

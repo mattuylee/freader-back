@@ -29,6 +29,7 @@ export class ShelfService {
         let updateResult = await shelfDao.updateShelfBook(shelf)
         let result = new Result()
         if (!updateResult.ok) {
+            result.code = 1
             result.error = '修改书架书籍失败'
         }
         return result
@@ -64,15 +65,20 @@ export class ShelfService {
         let updateResult = await shelfDao.updateShelfBookGroup(group)
         let result = new Result()
         if (!updateResult.result.ok) {
+            result.code = 1
             result.error = '修改分组失败'
         }
         else if (updateResult.upsertedCount) {
             let groupCount = await shelfDao.countShelfBookGroup(user.uid)
             if (groupCount > 100) {
                 shelfDao.removeShelfBookGroup(user.uid, group.gid)
+                result.code = 1
                 result.error = '分组数已达上限'
             }
         } //新增分组，判断是否超出
+        if (!result.code) {
+            result.data = await shelfDao.getShelfBookGroups(user.uid, group.gid)[0]
+        }
         return result
     }
     /**
