@@ -1,6 +1,5 @@
 import * as iconv from 'iconv-lite'
 import * as superAgent from 'superagent'
-import * as util from '../../util/index'
 import cheerio = require('cheerio')
 import path = require('path')
 import { Book, InfoLevel, UpdateStatus } from "../../domain/book/book";
@@ -8,7 +7,7 @@ import { Chapter } from '../../domain/book/chapter';
 import { ProviderError } from '../../domain/exception';
 import { ResourceInformation, RemoteResource } from "../../domain/resource-info";
 import { ResourceProvider } from "../../domain/types/crawling";
-import { logger } from '../../log/index'
+import { logger } from '../../log/index';
 
 //add request.Request.prototype.charset
 require('superagent-charset')(superAgent)
@@ -73,7 +72,7 @@ export class X23usCom implements ResourceProvider {
             return
         }
         let response = await superAgent.get(base + path.posix.join('/book/', info.data)).timeout({
-            deadline: 10000
+            deadline: 12000
         }).buffer(true)['charset']('gbk').catch(e => logger.error(e)) as superAgent.Response
         this._assertResponse(response, this.detail.name)
         const $ = cheerio.load(response.text)
@@ -104,6 +103,7 @@ export class X23usCom implements ResourceProvider {
             }
             else { book.status = UpdateStatus.Serial }
             book.lastUpdateTime = $('td:nth-of-type(3)', trs[1]).text().trim()
+            book.words = this._humanizeWordCount(Number.parseInt($('td:nth-of-type(2)', trs[1]).text()))
             book.cover = $('.fl a.hst img', context).attr('src').trim()
             if (book.cover.startsWith('/')) { book.cover = base + book.cover }
             book.intro = $('dd:nth-of-type(4) p:nth-of-type(2)', context).text().trim()
