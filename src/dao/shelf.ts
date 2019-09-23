@@ -64,11 +64,13 @@ export class ShelfDao {
         return groups
     }
     //更新书架分组
-    updateShelfBookGroup(group: ShelfBookGroup) {
-        return groupCollection.updateOne(
+    updateShelfBookGroup(group: ShelfBookGroup, upsert: boolean) {
+        const update = { $set: group }
+        if (upsert) { update['$setOnInsert'] = { _id: util.createRandomCode(32) } }
+        return groupCollection.findOneAndUpdate(
             { uid: group.uid, gid: group.gid },
-            { $set: group },
-            { upsert: true })
+            update,
+            { upsert: true, returnOriginal: false })
     }
     //删除书架分组
     async removeShelfBookGroup(uid: string, gid: string) {

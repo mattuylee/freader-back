@@ -59,26 +59,27 @@ export class ShelfService {
      * @param group 分组信息
      */
     async updateShelfBookGroup(token: string, group: ShelfBookGroup) {
+        const result = new Result()
         let user = await userDao.getUser({ token: token })
         group.uid = user.uid
-        if (!group.gid) {group.gid = util.createRandomCode(12)}
-        let updateResult = await shelfDao.updateShelfBookGroup(group)
-        let result = new Result()
-        if (!updateResult.result.ok) {
+        const isCreate = !group.gid
+        if (!group.gid) { group.gid = util.createRandomCode(12) }
+        let updateResult = await shelfDao.updateShelfBookGroup(group, isCreate)
+        if (!updateResult.ok || !updateResult.value) {
             result.code = 1
             result.error = '修改分组失败'
+            return result
         }
-        else if (updateResult.upsertedCount) {
+        if (isCreate) {
             let groupCount = await shelfDao.countShelfBookGroup(user.uid)
             if (groupCount > 100) {
                 shelfDao.removeShelfBookGroup(user.uid, group.gid)
                 result.code = 1
                 result.error = '分组数已达上限'
+                return result
             }
         } //新增分组，判断是否超出
-        if (!result.code) {
-            result.data = await shelfDao.getShelfBookGroups(user.uid, group.gid)[0]
-        }
+        result.data = updateResult.value
         return result
     }
     /**
