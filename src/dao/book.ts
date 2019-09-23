@@ -15,7 +15,6 @@ export class BookDao {
      */
     async getBook(bid: string, source?: string): Promise<Book> {
         let book = await bookCollection.findOne(util.trimEntity({ source: source, bid: bid }), {
-            hint: { bid: 1 },
             projection: { _id: false }
         })
         return util.setPrototype(book, Book.prototype)
@@ -46,7 +45,6 @@ export class BookDao {
      */
     async getCatalog(bid: string, source?: string): Promise<Chapter[]> {
         let chapters = await chapterCollection.find(util.trimEntity({ bid: bid, source: source }), {
-            hint: { bid: 1 },
             projection: { _id: false }
         }).toArray()
         chapters.forEach(c => util.setPrototype(c, Chapter.prototype))
