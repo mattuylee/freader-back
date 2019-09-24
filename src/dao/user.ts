@@ -52,7 +52,7 @@ export class UserDao {
     }
     /**注册 */
     async insertUser(user: User) {
-        return userCollection.insertOne(user)
+        return userCollection.insertOne(user, { forceServerObjectId: true })
     }
     /** 更新用户信息 */
     async updateUser(uid: string, user: User) {

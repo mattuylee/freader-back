@@ -106,7 +106,7 @@ export class UserService {
     /** 注册 */
     async register(referrerToken, user: User): Promise<Result<User>> {
         let result = new Result()
-        if (!user || util.validate(user.uid, { type: 'name' })) {
+        if (!user || !util.validate(user.uid, { type: 'name' })) {
             result.error = '无效的用户名'
         }
         else if (!util.validate(user.password, { type: 'password' })) {

@@ -101,7 +101,7 @@ const router: Controller = {
             headers: { "Content-Type": 'application/json' },
             params: [{
                 from: "body",
-                name: 'referer',
+                name: 'referrer',
                 description: '邀请码，实际为当前存在用户的会话token',
                 type: 'string',
                 validation: { valueType: 'string' }
