@@ -91,7 +91,9 @@ export class BookDao {
      */
     updateChapter(chapter: Chapter) {
         if (!chapter) { return }
-        return chapterCollection.updateOne({ cid: chapter.cid, bid: chapter.bid, source: chapter.source }, chapter)
+        return chapterCollection.updateOne(
+            { cid: chapter.cid, bid: chapter.bid, source: chapter.source },
+            { $set: chapter })
     }
 }
 
