@@ -18,8 +18,8 @@ export class Chapter {
        /**
         * 生成章节ID
         */
-       makeId(index?: number): string {
+       makeId(index: number): string {
         this.cid = String(index).padStart(4, '0') + util.hash(this.bid  + index + this.title)
-        return this.bid
+        return this.cid
     }
 }

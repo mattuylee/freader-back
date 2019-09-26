@@ -140,7 +140,7 @@ export class X23usCom implements ResourceProvider {
             if (!chpaterEls.length) {
                 this.throwError("爬虫策略异常", "无章节信息", this.catalog.name)
             }
-            for (let chapterEl of chpaterEls) {
+            chpaterEls.forEach((chapterEl, index) => {
                 let chapter = new Chapter()
                 chapter.bid = bid
                 chapter.source = this.name
@@ -148,9 +148,9 @@ export class X23usCom implements ResourceProvider {
                 chapter.resourceInfo = new ResourceInformation()
                 chapter.resourceInfo.source = this.name
                 chapter.resourceInfo.data = path.posix.join(info.data, chapterEl.attribs.href.trim())
-                chapter.makeId()
+                chapter.makeId(index)
                 chapters.push(chapter)
-            }
+            })
         }
         catch (e) {
             if (e instanceof ProviderError) { throw e }
