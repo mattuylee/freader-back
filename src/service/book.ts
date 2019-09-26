@@ -98,8 +98,9 @@ export class BookService {
             return result
         }
         try {
-            catalog = await provider.catalog(bid, book.catalogPageInfo ? book.catalogPageInfo : book.detailPageInfo) 
+            catalog = await provider.catalog(bid, book.catalogPageInfo ? book.catalogPageInfo : book.detailPageInfo)
             await bookDao.updateCatalog(bid, source, catalog)
+            if (catalog) { catalog.forEach(i => delete i['_id']) }
             result.data = catalog
         }
         catch(e) {

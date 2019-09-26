@@ -6,10 +6,9 @@
     "password": "ui",
 
     "testCases": {
-        "/book/search": {
+        "/book/catalog/f0d24c691719f98d64ac53e1128ee859": {
             "type": "route",
             "get": {
-                "kw": "超神机械师",
                 "source": "X23usCom"
             }
         }
