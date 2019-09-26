@@ -32,7 +32,7 @@ function filterOrigin(data, depth) {
         //用户密码
         if (data instanceof User && key == 'password') { continue }
         //书籍
-        if (data instanceof Book && (key == 'infoLevel' || key == 'lastWriteTime' || key == 'detailPageInfo' || key == 'catalogPageInfo'))
+        if (data instanceof Book && (key == 'infoLevel' || key == 'lastWriteTime' || key == 'detailPageInfo' || key == 'catalogPageInfo')) { continue }
         //章节资源定位信息
         if (data instanceof Chapter && key == 'resourceInfo') { continue }
         copy[key] = filterOrigin(data[key], depth + 1)

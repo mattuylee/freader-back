@@ -45,7 +45,7 @@ export class BookDao {
      */
     async getCatalog(bid: string, source?: string): Promise<Chapter[]> {
         let chapters = await chapterCollection.find(util.trimEntity({ bid: bid, source: source }), {
-            projection: { _id: false }
+            projection: { _id: false, content: false }
         }).toArray()
         chapters.forEach(c => util.setPrototype(c, Chapter.prototype))
         return chapters
