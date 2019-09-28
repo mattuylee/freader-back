@@ -25,7 +25,7 @@ export class X23usCom implements ResourceProvider {
             else { kw += String.fromCharCode(i) }
         })
         let response: superAgent.Response = (await superAgent.get(base + "/modules/article/search.php").timeout({
-            deadline: 12000
+            deadline: 30000
         }).buffer(true)['charset']('gbk').query('searchtype=keywords&searchkey=' + kw).catch(e => {
             logger.error(e)
         })) as superAgent.Response
@@ -72,7 +72,7 @@ export class X23usCom implements ResourceProvider {
             return
         }
         let response = await superAgent.get(base + path.posix.join('/book/', info.data)).timeout({
-            deadline: 12000
+            deadline: 30000
         }).buffer(true)['charset']('gbk').catch(e => logger.error(e)) as superAgent.Response
         this._assertResponse(response, this.detail.name)
         const $ = cheerio.load(response.text)
@@ -130,7 +130,7 @@ export class X23usCom implements ResourceProvider {
     }
     async catalog(bid: string, info: ResourceInformation) {
         let response = await superAgent.get(base + path.posix.join('/html/', info.data)).timeout({
-            deadline: 12000
+            deadline: 30000
         }).buffer(true)['charset']('gbk').catch(e => logger.error(e)) as superAgent.Response
         this._assertResponse(response, this.catalog.name)
         let chapters: Chapter[] = []
@@ -161,7 +161,7 @@ export class X23usCom implements ResourceProvider {
     }
     async chapter(bid: string, cid: string, info: ResourceInformation) {
         let response = await superAgent.get(base + path.posix.join('/html/', info.data)).timeout({
-            deadline: 12000
+            deadline: 30000
         }).buffer(true)['charset']('gbk').catch(e => logger.error(e)) as superAgent.Response
         this._assertResponse(response, this.chapter.name)
         try {
