@@ -24,7 +24,7 @@ export class X23usCom implements ResourceProvider {
             if (i > 127) { kw += '%' + i.toString(16) }
             else { kw += String.fromCharCode(i) }
         })
-        let response: superAgent.Response = (await superAgent.get("https://www.x23us.com/modules/article/search.php").timeout({
+        let response: superAgent.Response = (await superAgent.get(base + "/modules/article/search.php").timeout({
             deadline: 12000
         }).buffer(true)['charset']('gbk').query('searchtype=keywords&searchkey=' + kw).catch(e => {
             logger.error(e)
@@ -171,6 +171,7 @@ export class X23usCom implements ResourceProvider {
             let chapter = new Chapter()
             chapter.cid = cid
             chapter.bid = bid
+            chapter.title = $('h1').text().trim()
             chapter.source = this.name
             chapter.resourceInfo = info
             chapter.content = paras.join('\n')
