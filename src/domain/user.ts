@@ -23,6 +23,6 @@ export class User {
  * @enum 用户组
  */
 export enum UserGroup {
-    User = 'User',
-    Admin = 'Admin'
+    User = 'user',
+    Admin = 'admin'
 }
