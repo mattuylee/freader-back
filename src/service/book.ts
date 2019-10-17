@@ -99,6 +99,11 @@ export class BookService {
         }
         try {
             catalog = await provider.catalog(bid, book.catalogPageInfo ? book.catalogPageInfo : book.detailPageInfo)
+            if (catalog.length) {
+                const book = new Book()
+                book.chapterCount = catalog.length
+                bookDao.updateBook(book)
+            } //更新章节计数
             await bookDao.updateCatalog(bid, source, catalog)
             if (catalog) { catalog.forEach(i => delete i['_id']) }
             result.data = catalog
