@@ -25,14 +25,12 @@ export class BookDao {
      */
     updateBook(book: Book) {
         if (!book) { return }
-        let update = {
-            $set: util.trimEntity(book, [undefined, null, ''])
-        }
+        let update = { $set: util.trimEntity(book, [undefined, null, '']) }
         let updatesOnInsert: any = {}
         if (!util.isInfoLevelEnough(book.infoLevel, InfoLevel.Detail)) {
             //如果信息丰富级别低于“详情”级别，仅插入新文档时插入信息级别，防止信息级别回退
-            delete book.infoLevel
             updatesOnInsert.infoLevel = book.infoLevel
+            delete book.infoLevel
             update['$setOnInsert'] = updatesOnInsert
         }
         book.lastWriteTime = Date.now()
