@@ -12,7 +12,7 @@ import { logger } from '../../log/index';
 //add request.Request.prototype.charset
 require('superagent-charset')(superAgent)
 
-const base = "https://www.x23us.com"
+const base = "https://www.ydshu.com"
 
 export class X23usCom implements ResourceProvider {
     readonly name = RemoteResource.X23usCom
@@ -31,7 +31,7 @@ export class X23usCom implements ResourceProvider {
         })) as superAgent.Response
         //检查是否正确响应
         this._assertResponse(response, this.search.name)
-        let detailPagePrefix = "https://www.x23us.com/book/"
+        let detailPagePrefix = base + "/book/"
         if (String(response.redirects[0]).startsWith(detailPagePrefix)) {
             //如果是否单一结果（请求被重定向到到详情页）则直接调用相关接口
             let book = await this.detail(null, {
