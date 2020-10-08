@@ -148,7 +148,7 @@ export class X23usCom implements ResourceProvider {
                 chapter.resourceInfo = new ResourceInformation()
                 chapter.resourceInfo.source = this.name
                 chapter.resourceInfo.data = path.posix.join(info.data, chapterEl.attribs.href.trim())
-                chapter.makeId(index)
+                chapter.makeId()
                 chapters.push(chapter)
             })
         }

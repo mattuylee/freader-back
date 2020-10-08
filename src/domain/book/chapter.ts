@@ -7,19 +7,20 @@ import * as util from '../../util/index'
  * 享同一章节ID。要定位章节，需要指定数据源
  */
 export class Chapter {
-    cid: string         //章节ID
-    bid: string         //书籍ID
-    title: string       //章节标题
-    wordCount: number   //字数统计
-    content: string     //章节内容
-    source: string      //数据源
+  cid: string         //章节ID
+  bid: string         //书籍ID
+  title: string       //章节标题
+  wordCount: number   //字数统计
+  content: string     //章节内容
+  source: string      //数据源
+  isVip: boolean      //是否付费章节
 
-    resourceInfo: ResourceInformation //资源定位
-       /**
-        * 生成章节ID
-        */
-       makeId(index: number): string {
-        this.cid = String(index).padStart(4, '0') + util.hash(this.bid  + index + this.title)
-        return this.cid
-    }
+  resourceInfo: ResourceInformation //资源定位
+  /**
+   * 生成章节ID
+   */
+  makeId(): string {
+    this.cid = util.hash(this.bid + this.resourceInfo.data)
+    return this.cid
+  }
 }
