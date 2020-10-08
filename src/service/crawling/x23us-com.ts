@@ -123,14 +123,14 @@ export class X23usCom implements ResourceProvider {
     return book
   }
   async catalog(bid: string, info: ResourceInformation) {
-    let response = await superAgent.get(base + path.posix.join('/html/', info.data)).timeout({
+    let response = await superAgent.get(base + path.posix.join('/book/', info.data)).timeout({
       deadline: 30000
     }).buffer(true)['charset']('gbk').catch(e => logger.error(e)) as superAgent.Response
     this._assertResponse(response, this.catalog.name)
     let chapters: Chapter[] = []
     try {
       const $ = cheerio.load(response.text)
-      let chpaterEls = $('#at td a').toArray()
+      let chpaterEls = $('.box_con #list ._chapter li a').toArray()
       if (!chpaterEls.length) {
         this.throwError("爬虫策略异常", "无章节信息", this.catalog.name)
       }
@@ -141,7 +141,7 @@ export class X23usCom implements ResourceProvider {
         chapter.title = $(chapterEl).text().trim()
         chapter.resourceInfo = new ResourceInformation()
         chapter.resourceInfo.source = this.name
-        chapter.resourceInfo.data = path.posix.join(info.data, chapterEl.attribs.href.trim())
+        chapter.resourceInfo.data = path.posix.join(info.data, $(chapterEl).attr('href').trim())
         chapter.makeId()
         chapters.push(chapter)
       })
@@ -154,13 +154,13 @@ export class X23usCom implements ResourceProvider {
     return chapters
   }
   async chapter(bid: string, cid: string, info: ResourceInformation) {
-    let response = await superAgent.get(base + path.posix.join('/html/', info.data)).timeout({
+    let response = await superAgent.get(base + path.posix.join('/book/', info.data)).timeout({
       deadline: 30000
     }).buffer(true)['charset']('gbk').catch(e => logger.error(e)) as superAgent.Response
     this._assertResponse(response, this.chapter.name)
     try {
       const $ = cheerio.load(response.text)
-      let paras = $('#contents').text().trim().split('    ')
+      let paras = $('#content').text().trim().split('    ')
       for (let i in paras) { paras[i] = paras[i].trim() }
       let chapter = new Chapter()
       chapter.cid = cid

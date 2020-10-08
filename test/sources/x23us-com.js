@@ -15,4 +15,22 @@ describe("顶点（x23us）数据源测试", function () {
     expect(book.detailPageInfo).have.property('data').that.is.an('string', "获取详情页信息失败")
     expect(book.bid).to.equal('63f44e872b6faa293ccac88c40809543')
   }).timeout(0)
+
+
+  it("测试获取书籍目录", async function () {
+    const catalog = await dingdian.catalog('63f44e872b6faa293ccac88c40809543', {
+      source: RemoteResource.X23usCom,
+      data: '503/'
+    })
+    expect(catalog).to.be.an('array', "获取书籍目录失败").that.lengthOf.above(0, "书籍目录信息为空")
+  }).timeout(0)
+
+  it("测试获取章节内容", async function () {
+    const chapter = await dingdian.chapter(
+      '63f44e872b6faa293ccac88c40809543',
+      '4dc7ec75ae24572889678010ac57dc92',
+      new ResourceInformation(RemoteResource.X23usCom, '503/49020.html')
+    )
+    expect(chapter.content).lengthOf.above(0, "获取章节内容失败")
+  }).timeout(0)
 })
