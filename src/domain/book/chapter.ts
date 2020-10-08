@@ -15,6 +15,7 @@ export class Chapter {
   source: string      //数据源
   isVip: boolean      //是否付费章节
 
+  index: number      //章节索引，用于数据库排序
   resourceInfo: ResourceInformation //资源定位
   /**
    * 生成章节ID
