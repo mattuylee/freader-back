@@ -131,8 +131,16 @@ export class Qidian implements ResourceProvider {
         chapter.source = this.name
         chapter.title = chapterInfo.cN.trim()
         chapter.wordCount = chapterInfo.cnt
-        chapter.resourceInfo = new ResourceInformation(this.name, chapterInfo.cU.trim())
-        chapter.cid = chapter.makeId()
+        chapter.isVip = !!volume.vS
+        if (chapter.isVip) {
+          chapter.resourceInfo = new ResourceInformation(this.name, chapterInfo.id)
+          chapter.makeId()
+          chapter.resourceInfo = new ResourceInformation(this.name, '_vip')
+        }
+        else {
+          chapter.resourceInfo = new ResourceInformation(this.name, chapterInfo.cU)
+          chapter.cid = chapter.makeId()
+        }
         chapters.push(chapter)
       }
     }
@@ -142,6 +150,9 @@ export class Qidian implements ResourceProvider {
   async chapter(bid: string, cid: string, info: ResourceInformation): Promise<Chapter> {
     if (!info || !info.data) {
       this.throwError("无效的数据源", "章节资源路径缺失", this.chapter.name)
+    }
+    if (info.data === '_vip') {
+      this.throwError("本章节为VIP章节")
     }
     try {
       const res = await superAgent.get('https://read.qidian.com/chapter/' + info.data).timeout({

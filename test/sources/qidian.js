@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const { RemoteResource, ResourceInformation } = require('../../bin/domain/resource-info')
+const { RemoteSource, ResourceInformation } = require('../../bin/domain/resource-info')
 const { instance: qidian } = require('../../bin/service/crawling/qidian-com')
 
 describe("起点数据源测试", function () {
@@ -16,12 +16,12 @@ describe("起点数据源测试", function () {
   })
 
   it("测试获取书籍目录", async function () {
-    const catalog = await qidian.catalog('63f44e872b6faa293ccac88c40809543', {
-      source: RemoteResource.Qidian,
+    const catalog = await qidian.catalog('83e1bba9754905d8df9b8041f15a0bd7', {
+      source: RemoteSource.Qidian,
       data: JSON.stringify({
-        name: '诡秘之主',
-        author: '爱潜水的乌贼',
-        qdId: '1010868264'
+        name: '超神机械师',
+        author: '齐佩甲',
+        qdId: '1009480992'
       })
     })
     expect(catalog).to.be.an('array', "获取书籍目录失败").that.lengthOf.above(0, "书籍目录信息为空")
@@ -31,7 +31,7 @@ describe("起点数据源测试", function () {
     const chapter = await qidian.chapter(
       '63f44e872b6faa293ccac88c40809543',
       '72046ee64794248218b99f48725f40b9',
-      new ResourceInformation(RemoteResource.Qidian, '3Q__bQt6cZEVDwQbBL_r1g2/GSlTBhSdiqP4p8iEw--PPw2')
+      new ResourceInformation(RemoteSource.Qidian, '3Q__bQt6cZEVDwQbBL_r1g2/GSlTBhSdiqP4p8iEw--PPw2')
     )
     expect(chapter.content).lengthOf.above(0, "获取章节内容失败")
   })
