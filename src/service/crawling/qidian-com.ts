@@ -3,14 +3,14 @@ import * as superAgent from 'superagent';
 import { Book, InfoLevel, UpdateStatus } from "../../domain/book/book";
 import { Chapter } from '../../domain/book/chapter';
 import { ProviderError } from '../../domain/exception';
-import { RemoteResource, ResourceInformation } from "../../domain/resource-info";
+import { RemoteSource, ResourceInformation } from "../../domain/resource-info";
 import { ResourceProvider } from "../../domain/types/crawling";
 import { logger } from '../../log/index';
 
 const UA = 'Mozilla/5.0 (X11; Linux x86_64; rv:81.0) Gecko/20100101 Firefox/81.0'
 
 export class Qidian implements ResourceProvider {
-  readonly name = RemoteResource.Qidian
+  readonly name = RemoteSource.Qidian
 
   private csrfToken = {
     token: null,
