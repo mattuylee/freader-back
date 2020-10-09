@@ -3,14 +3,14 @@ import * as superAgent from 'superagent';
 import { Book, InfoLevel, UpdateStatus } from "../../domain/book/book";
 import { Chapter } from '../../domain/book/chapter';
 import { ProviderError } from '../../domain/exception';
-import { RemoteSource, ResourceInformation } from "../../domain/resource-info";
+import { RemoteResource, ResourceInformation } from "../../domain/resource-info";
 import { ResourceProvider } from "../../domain/types/crawling";
 import { logger } from '../../log/index';
 
 const UA = 'Mozilla/5.0 (X11; Linux x86_64; rv:81.0) Gecko/20100101 Firefox/81.0'
 
 export class Qidian implements ResourceProvider {
-  readonly name = RemoteSource.Qidian
+  readonly name = RemoteResource.Qidian
 
   private csrfToken = {
     token: null,
@@ -129,9 +129,9 @@ export class Qidian implements ResourceProvider {
         const chapter = new Chapter()
         chapter.bid = bid
         chapter.source = this.name
-        chapter.title = chapterInfo.cN
+        chapter.title = chapterInfo.cN.trim()
         chapter.wordCount = chapterInfo.cnt
-        chapter.resourceInfo = new ResourceInformation(this.name, chapterInfo.cU)
+        chapter.resourceInfo = new ResourceInformation(this.name, chapterInfo.cU.trim())
         chapter.cid = chapter.makeId()
         chapters.push(chapter)
       }
