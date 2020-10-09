@@ -37,14 +37,14 @@ export class Qidian implements ResourceProvider {
         book.author = $(".book-mid-info .author img", item).next().text().trim()
         const anchors = $(".book-mid-info .author a", item)
         if (anchors.length > 1) {
-          book.category = $(anchors[anchors.length - 1]).text()
+          book.category = $(anchors[anchors.length - 1]).text().trim()
         }
         const staus = $(".book-mid-info .author span", item).text().trim()
         book.status = staus === '完结' ? UpdateStatus.Completed : UpdateStatus.Serial
         book.intro = $(".book-mid-info .intro", item).text().trim()
         book.words = $(".book-right-info .total p:first-of-type span", item).text().trim()
-        book.latestChapter = $(".book-mid-info .update a", item).text().slice(5)
-        book.lastUpdateTime = $(".book-mid-info .update span", item).text()
+        book.latestChapter = $(".book-mid-info .update a", item).text().slice(5).trim()
+        book.lastUpdateTime = $(".book-mid-info .update span", item).text().trim()
         if (!book.name || !book.author) {
           this.throwError("爬虫策略异常", "获取书籍信息失败", this.search.name)
         }
