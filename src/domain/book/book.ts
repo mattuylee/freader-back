@@ -1,5 +1,5 @@
 import * as util from '../../util/index'
-import { ResourceInformation, RemoteResource } from "../resource-info";
+import { ResourceInformation, RemoteSource } from "../resource-info";
 
 /**
  * 定义书籍主体
@@ -18,7 +18,7 @@ export class Book {
     lastUpdateTime: string      //书籍上次更新时间
     latestChapter: string       //最新章节
     chapterCount: number        //章节计数
-    source: RemoteResource      //数据源
+    source: RemoteSource      //数据源
     /**@region 仅服务端存储 */
     infoLevel: InfoLevel        //书籍信息完善度
     lastWriteTime: number       //数据库上次更新时间

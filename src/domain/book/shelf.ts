@@ -1,3 +1,5 @@
+import { RemoteSource } from "../resource-info"
+
 /**
  * 定义书架书籍。
  * 书架书籍由用户ID与书籍ID共同决定。对于不同数据源的相同书
@@ -11,6 +13,7 @@ export class ShelfBook {
     chapterIndex: number    //阅读进度
     readProgress: number    //当前章节阅读进度
     latestReadTime: number  //最近阅读时间
+    source: RemoteSource
     //用于类型验证
     static readonly empty: ShelfBook = Object.freeze({
         uid: '',
@@ -19,7 +22,8 @@ export class ShelfBook {
         cid: '',
         chapterIndex: 0,
         readProgress: 0,
-        latestReadTime: 0
+        latestReadTime: 0,
+        source: RemoteSource.Default
     })
 }
 

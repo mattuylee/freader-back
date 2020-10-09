@@ -5,7 +5,7 @@ import * as path from 'path';
 import { Book, InfoLevel, UpdateStatus } from "../../domain/book/book";
 import { Chapter } from '../../domain/book/chapter';
 import { ProviderError } from '../../domain/exception';
-import { ResourceInformation, RemoteResource } from "../../domain/resource-info";
+import { ResourceInformation, RemoteSource } from "../../domain/resource-info";
 import { ResourceProvider } from "../../domain/types/crawling";
 import { logger } from '../../log/index';
 
@@ -15,7 +15,7 @@ require('superagent-charset')(superAgent)
 const base = "https://www.230book.com"
 
 export class X23usCom implements ResourceProvider {
-  readonly name = RemoteResource.X23usCom
+  readonly name = RemoteSource.X23usCom
   //搜索
   async search(keyword: string, _: never) {
     //关键词转gbk
