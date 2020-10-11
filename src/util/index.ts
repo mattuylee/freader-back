@@ -30,19 +30,19 @@ export const hash = _hash
  * @param format.englishDate YYYY-MM-DD
  */
 export function formatTime(time, format: string) {
-    let t = new Date(time)
-    switch (format) {
-        case 'chineseFull':
-            return `${t.getFullYear()}年${t.getMonth() + 1}月${t.getDate()}日 ${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}:${String(t.getSeconds()).padStart(2, '0')}`
-        case 'chineseDate':
-            return `${t.getFullYear()}年${t.getMonth() + 1}月${t.getDate()}日`
-        case 'englishFull':
-            return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')} ${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}:${String(t.getSeconds()).padStart(2, '0')}`
-        case 'englishDate':
-            return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`
-        default:
-            return t.toString()
-    }
+  let t = new Date(time)
+  switch (format) {
+    case 'chineseFull':
+      return `${t.getFullYear()}年${t.getMonth() + 1}月${t.getDate()}日 ${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}:${String(t.getSeconds()).padStart(2, '0')}`
+    case 'chineseDate':
+      return `${t.getFullYear()}年${t.getMonth() + 1}月${t.getDate()}日`
+    case 'englishFull':
+      return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')} ${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}:${String(t.getSeconds()).padStart(2, '0')}`
+    case 'englishDate':
+      return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`
+    default:
+      return t.toString()
+  }
 }
 
 /**
@@ -52,13 +52,11 @@ export function formatTime(time, format: string) {
  * @return {boolean} 是否满足
  */
 export function isInfoLevelEnough(level: InfoLevel, target: InfoLevel): boolean {
-    if (target == InfoLevel.None) { return true }
-    if (target == InfoLevel.Search && [InfoLevel.Search, InfoLevel.Detail, InfoLevel.All].includes(level)) {
-        return true
-    }
-    if (target == InfoLevel.Detail && [InfoLevel.Detail, InfoLevel.All].includes(level)) {
-        return true
-    }
-    if (target == InfoLevel.All && level == InfoLevel.All) { return true }
+  const levels = [InfoLevel.None, InfoLevel.Meta, InfoLevel.Search, InfoLevel.Detail, InfoLevel.All]
+    , index = levels.indexOf(level)
+    , targetIndex = levels.indexOf(target)
+  if (index === -1 || targetIndex === -1) {
     return false
+  }
+  return index >= targetIndex
 }

@@ -187,6 +187,7 @@ export class Qidian implements ResourceProvider {
   }
 
 
+
   throwError(message: string, detail?: string, caller?: string): never {
     let error = new ProviderError()
     error.name = this.name

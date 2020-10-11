@@ -41,6 +41,7 @@ export class Book {
  */
 export enum InfoLevel {
     None = 'None',      //无数据
+    Meta = "Meta",      //仅有元数据
     Search = 'Search',  //仅搜索记录
     Detail = 'Detail',  //有详情数据
     All = 'All'         //有所有数据（手动录入）
