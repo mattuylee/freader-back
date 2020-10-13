@@ -5,8 +5,8 @@ import * as path from 'path';
 import { Book, InfoLevel, UpdateStatus } from "../../domain/book/book";
 import { Chapter } from '../../domain/book/chapter';
 import { ProviderError } from '../../domain/exception';
-import { ResourceInformation, RemoteSource } from "../../domain/resource-info";
-import { ResourceProvider } from "../../domain/types/crawling";
+import { ResourceInformation, SourceLiteral } from "../../domain/resource-info";
+import { ResourceProvider, SeriesOptions } from "../../domain/types/crawling";
 import { logger } from '../../log/index';
 
 //add request.Request.prototype.charset
@@ -15,7 +15,7 @@ require('superagent-charset')(superAgent)
 const base = "https://www.230book.com"
 
 export class X23usCom implements ResourceProvider {
-  readonly name = RemoteSource.X23usCom
+  readonly name = SourceLiteral.X23usCom
   //搜索
   async search(keyword: string, _: never) {
     //关键词转gbk
@@ -176,6 +176,19 @@ export class X23usCom implements ResourceProvider {
       logger.error(e)
       this.throwError("爬虫策略异常", "匹配章节内容失败", this.chapter.name)
     }
+  }
+
+  async categories(options: SeriesOptions) {
+    this.throwError("该数据源不支持分类")
+    return null
+  }
+  async serieses(options: SeriesOptions) {
+    this.throwError("该数据源不支持推荐")
+    return null
+  }
+  async bookList(..._) {
+    this.throwError("该数据源不支持书单")
+    return null
   }
 
   throwError(message: string, detail?: string, caller?: string): never {

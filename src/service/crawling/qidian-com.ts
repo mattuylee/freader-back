@@ -1,16 +1,87 @@
 import * as cheerio from 'cheerio';
 import * as superAgent from 'superagent';
-import { Book, InfoLevel, UpdateStatus } from "../../domain/book/book";
+import { isNumber } from 'util';
+import { Book, InfoLevel, Series, SeriesBookList, SeriesSupport, SeriesType, UpdateStatus } from "../../domain/book/book";
 import { Chapter } from '../../domain/book/chapter';
 import { ProviderError } from '../../domain/exception';
-import { RemoteSource, ResourceInformation } from "../../domain/resource-info";
-import { ResourceProvider } from "../../domain/types/crawling";
+import { SourceLiteral, ResourceInformation } from "../../domain/resource-info";
+import { ResourceProvider, SeriesOptions } from "../../domain/types/crawling";
 import { logger } from '../../log/index';
 
 const UA = 'Mozilla/5.0 (X11; Linux x86_64; rv:81.0) Gecko/20100101 Firefox/81.0'
+  , recommendSupport = SeriesSupport.MultiPage | SeriesSupport.Gender
+  , rankSupport = SeriesSupport.MultiPage | SeriesSupport.Gender | SeriesSupport.Category
+  , categorySupport = SeriesSupport.MultiPage
+    | SeriesSupport.Gender
+    | SeriesSupport.Category
+    | SeriesSupport.FinishState
+  , recommendSerieses = [{
+    id: 'bestSelllist',
+    type: SeriesType.Recommand,
+    name: "畅销书籍",
+    more: true,
+    support: recommendSupport
+  }, {
+    id: 'newBooklist',
+    type: SeriesType.Recommand,
+    name: "新书抢鲜",
+    more: true,
+    support: recommendSupport
+  }, {
+    id: 'sanjiangList',
+    type: SeriesType.Recommand,
+    name: "精品好书",
+    support: recommendSupport
+  }, {
+    id: 'classiclist',
+    type: SeriesType.Recommand,
+    name: "经典必读",
+    support: recommendSupport
+  }]
+  , rankSerieses = [{
+    id: 'yuepiaolist',
+    type: SeriesType.Rank,
+    name: '风云榜',
+    support: rankSupport
+  }, {
+    id: 'hotsaleslist',
+    type: SeriesType.Rank,
+    name: "畅销榜",
+    support: rankSupport
+  }, {
+    id: 'readIndexlist',
+    type: SeriesType.Rank,
+    name: "阅读榜",
+    support: rankSupport
+  }, {
+    id: 'reclist',
+    type: SeriesType.Rank,
+    name: '推荐榜',
+    support: rankSupport
+  }, {
+    id: 'newfanslist',
+    type: SeriesType.Rank,
+    name: '涨粉榜',
+    support: rankSupport
+  }, {
+    id: 'updatelist',
+    type: SeriesType.Rank,
+    name: '更新榜',
+    support: rankSupport
+  }, {
+    id: 'newauthorlist',
+    type: SeriesType.Rank,
+    name: '新人榜',
+    support: rankSupport
+  }, {
+    id: 'newbooklist',
+    type: SeriesType.Rank,
+    name: '新书榜',
+    support: rankSupport
+  }]
 
 export class Qidian implements ResourceProvider {
-  readonly name = RemoteSource.Qidian
+  readonly name = SourceLiteral.Qidian
 
   private csrfToken = {
     token: null,
@@ -40,7 +111,7 @@ export class Qidian implements ResourceProvider {
           book.category = $(anchors[anchors.length - 1]).text().trim()
         }
         const staus = $(".book-mid-info .author span", item).text().trim()
-        book.status = staus === '完结' ? UpdateStatus.Completed : UpdateStatus.Serial
+        book.status = staus === '完结' ? UpdateStatus.Finished : UpdateStatus.Serial
         book.intro = $(".book-mid-info .intro", item).text().trim()
         book.words = $(".book-right-info .total p:first-of-type span", item).text().trim()
         book.latestChapter = $(".book-mid-info .update a", item).text().slice(5).trim()
@@ -111,15 +182,10 @@ export class Qidian implements ResourceProvider {
     }
     const agent = superAgent.agent()
     agent.set('User-Agent', UA)
-    if (Date.now() - this.csrfToken.fetchTime > 86400000) {
-      const response = await agent.get('https://www.qidian.com/ajax/Help/getCode')
-        , cookie = response.get('Set-Cookie').find(cookie => cookie.startsWith('_csrfToken='))
-      this.csrfToken.fetchTime = Date.now()
-      this.csrfToken.token = cookie.slice(cookie.indexOf('=') + 1, cookie.indexOf(';'))
-    }
+    const token = await this.getCsrfToken()
     const res = await agent.get('https://book.qidian.com/ajax/book/category').query({
       bookId: qdId,
-      _csrfToken: this.csrfToken.token
+      _csrfToken: token
     }).timeout({ deadline: 30000 })
     const volumes = JSON.parse(res.text).data.vs
       , chapters: Chapter[] = []
@@ -186,7 +252,147 @@ export class Qidian implements ResourceProvider {
     }
   }
 
+  async serieses(options: SeriesOptions): Promise<Series[]> {
+    options = options || {}
+    const result: Series[] = []
+    for (const seriesInfo of [...recommendSerieses, ...rankSerieses]) {
+      try {
+        const bookList = await this.bookList(seriesInfo.id, 1, options)
+        result.push({
+          id: seriesInfo.id,
+          type: seriesInfo.type,
+          name: seriesInfo.name,
+          source: this.name,
+          books: bookList.books,
+          support: seriesInfo.support
+        })
+      }
+      catch (e) {
+        logger.log(e)
+      }
+    }
+    return result
+  }
 
+  async categories(options: SeriesOptions): Promise<Series[]> {
+    let gender = options && options.gender
+    gender = gender === 'female' ? 'female' : 'male'
+    const result: Series[] = []
+      , res = await superAgent.get('https://m.qidian.com/category/' + gender)
+      , $ = cheerio.load(res.text)
+      , cates = $('.page .module-merge .sort-ul .sort-li .sort-li-header')
+    for (const el of cates.toArray()) {
+      const series: Series = {
+        id: null,
+        type: SeriesType.Category,
+        name: $('h3', el).text().trim(),
+        source: this.name,
+        support: categorySupport
+      }
+      const id = $(el).attr('href').trim()
+      series.id = id.slice(id.lastIndexOf('/') + 1)
+      result.push(series)
+    }
+    return result
+  }
+
+  async bookList(seriesId: string, page: number, options?: SeriesOptions): Promise<SeriesBookList> {
+    seriesId = String(seriesId).toLowerCase()
+    options = options || {}
+    const serieses = [...recommendSerieses, ...rankSerieses]
+    let series = serieses.find(s => s.id.toLowerCase() === seriesId)
+    if (!series && !Number.isNaN(Number(seriesId))) {
+      this.throwError("书单不存在", null, this.bookList.name)
+    }
+    if (!series) {
+      //分类
+      series = {
+        id: seriesId,
+        type: SeriesType.Category,
+        name: null,
+        support: categorySupport
+      }
+    }
+    return await this.fetchBookList(series, page, options)
+
+  }
+
+  private async fetchBookList(
+    series: { type: SeriesType, id: string, support: number },
+    page: number,
+    options: SeriesOptions): Promise<SeriesBookList> {
+    options = options || {}
+    let url = 'https://m.qidian.com/majax/'
+    switch (series.type) {
+      case SeriesType.Recommand:
+        url += 'recommend/' + series.id
+        break
+      case SeriesType.Rank:
+        url += 'rank/' + series.id
+        break
+      case SeriesType.Category:
+        url += 'category/list'
+    }
+    const req = superAgent.get(url)
+      .query({ _csrfToken: await this.getCsrfToken() })
+      .query({ pageNum: page > 0 ? page : 1 })
+      .query({ gender: options.gender === 'female' ? 'female' : 'male' })
+      .timeout(10000)
+    if ((series.support & SeriesSupport.Category) && options.categoryId !== undefined) {
+      req.query({ catId: options.categoryId })
+    }
+    if ((series.support & SeriesSupport.FinishState) && options.state) {
+      if (options.state === 'finished') {
+        req.query({ isfinish: 1 })
+      }
+      else if (options.state === 'serial') {
+        req.query({ isfinish: 0 })
+      }
+    }
+    const res = await req
+      , bookList = JSON.parse(res.text)
+      , data = bookList.data
+      , records = bookList.data.records
+      , result: SeriesBookList = {
+        seriesId: series.id,
+        isLast: !!data.isLast,
+        page: +data.pageNum,
+        source: this.name,
+        total: +data.total,
+        books: []
+      }
+    for (const bookInfo of records) {
+      const book = new Book()
+      book.name = bookInfo.bName
+      book.author = bookInfo.bAuth
+      book.intro = bookInfo.desc
+      book.category = bookInfo.cat
+      book.status = bookInfo.state === '完结' ? UpdateStatus.Finished : UpdateStatus.Serial
+      book.words = bookInfo.cnt
+      book.cover = `https://bookcover.yuewen.com/qdbimg/349573/${bookInfo.bid}/300`
+      book.infoLevel = InfoLevel.Meta
+      book.detailPageInfo = new ResourceInformation(this.name, JSON.stringify({
+        name: book.name,
+        author: book.author,
+        qdId: bookInfo.bid
+      }))
+      book.makeId()
+      result.books.push(book)
+    }
+    return result
+  }
+
+
+  private async getCsrfToken(): Promise<string> {
+    if (Date.now() - this.csrfToken.fetchTime > 86400000 * 7) {
+      //每7天重新获取csrf token
+      const response = await superAgent.get('https://www.qidian.com/ajax/Help/getCode')
+        , cookie = response.get('Set-Cookie').find(cookie => cookie.startsWith('_csrfToken='))
+      this.csrfToken.fetchTime = Date.now()
+      this.csrfToken.token = cookie.slice(cookie.indexOf('=') + 1, cookie.indexOf(';'))
+    }
+    return this.csrfToken.token
+  }
 
   throwError(message: string, detail?: string, caller?: string): never {
     let error = new ProviderError()

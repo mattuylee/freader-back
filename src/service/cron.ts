@@ -62,7 +62,7 @@ class CronService {
                     title: newbook.latestChapter
                 }
                 //完本或有新章节时更新目录
-                if (newbook.status == UpdateStatus.Completed || !filter.title || !await cronDao.getChapter(filter)) {
+                if (newbook.status == UpdateStatus.Finished || !filter.title || !await cronDao.getChapter(filter)) {
                     logger.debug(`更新书籍目录【${newbook.name}】`)
                     let catalog = await provider.catalog(newbook.bid, newbook.catalogPageInfo ? newbook.catalogPageInfo : newbook.detailPageInfo)
                     await bookDao.updateCatalog(newbook.bid, newbook.source, catalog)

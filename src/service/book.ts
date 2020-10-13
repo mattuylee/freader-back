@@ -1,6 +1,6 @@
 import { Result } from "../domain/result";
 import { instance as bookDao } from "../dao/book";
-import { RemoteSource, RemoteSources } from "../domain/resource-info";
+import { SourceLiteral, RemoteSources } from "../domain/resource-info";
 import { instance as x23usComProvider } from "./crawling/x23us-com";
 import { instance as qidian } from "./crawling/qidian-com";
 import { ResourceProvider } from "../domain/types/crawling";
@@ -181,10 +181,10 @@ export class BookService {
    */
   getResourceProvider(source: string, noDefault?: boolean): ResourceProvider {
     switch (String(source)) {
-      case RemoteSource.X23usCom:
+      case SourceLiteral.X23usCom:
         return x23usComProvider
-      case RemoteSource.Qidian:
-      case RemoteSource.Default:
+      case SourceLiteral.Qidian:
+      case SourceLiteral.Default:
       default:
         return noDefault ? null : qidian
     }

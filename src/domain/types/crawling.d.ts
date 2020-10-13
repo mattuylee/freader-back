@@ -1,4 +1,4 @@
-import { Book } from "../book/book";
+import { Book, Series, SeriesBookList } from "../book/book";
 import { ResourceInformation } from "../resource-info";
 import { Chapter } from "../book/chapter";
 
@@ -9,39 +9,69 @@ import { Chapter } from "../book/chapter";
  * 或者空数据，如果接口应该允许空结果，应对应的返回[]等结果而非null或undefined
  */
 export interface ResourceProvider {
-    /** 数据源名称 */
-    name: string
-    /**
-     * 搜索书籍
-     * @param keyword 关键词
-     * @deprecated @param {number} page 页面索引
-     * @return 搜索到的书籍列表。列表中的书籍仅包含基本信息，信息级别应为“搜索级”
-     */
-    search(keyword: string, page?: never): Promise<Book[]>
-    /**
-     * 获取书籍详情数据
-     * @param bid 书籍ID
-     * @param info 数据源自定义的资源定位信息
-     * @return 书籍详细信息，信息级别为“详情级”
-     */
-    detail(bid: string, info: ResourceInformation): Promise<Book>
-    /**
-     * 获取章节列表
-     * @param bid 书籍ID
-     * @param info 书籍目录的资源定位信息
-     */
-    catalog(bid: string, info: ResourceInformation): Promise<Chapter[]>
-    /**
-     * 获取章节内容
-     * @param bid 书籍ID
-     * @param cid 章节ID
-     * @param info 章节资源定位信息
-     */
-    chapter(bid: string, cid: string, info: ResourceInformation): Promise<Chapter>
-    /**
-     * 抛出异常
-     * @param message 错误信息
-     * @throws {ProviderError}
-     */
-    throwError(message: string): never
+  /** 数据源名称 */
+  name: string
+  /**
+   * 搜索书籍
+   * @param keyword 关键词
+   * @deprecated @param {number} page 页面索引
+   * @return 搜索到的书籍列表。列表中的书籍仅包含基本信息，信息级别应为“搜索级”
+   */
+  search(keyword: string, page?: never): Promise<Book[]>
+  /**
+   * 获取书籍详情数据
+   * @param bid 书籍ID
+   * @param info 数据源自定义的资源定位信息
+   * @return 书籍详细信息，信息级别为“详情级”
+   */
+  detail(bid: string, info: ResourceInformation): Promise<Book>
+  /**
+   * 获取章节列表
+   * @param bid 书籍ID
+   * @param info 书籍目录的资源定位信息
+   */
+  catalog(bid: string, info: ResourceInformation): Promise<Chapter[]>
+  /**
+   * 获取章节内容
+   * @param bid 书籍ID
+   * @param cid 章节ID
+   * @param info 章节资源定位信息
+   */
+  chapter(bid: string, cid: string, info: ResourceInformation): Promise<Chapter>
+
+  /**
+   * 获取推荐书单。注意，结果中应该包含少量书籍信息，用于展示在发现页
+   * @param options 选项 @see SeriesOptions
+   */
+  serieses(options: SeriesOptions): Promise<Series[]>;
+
+  /**
+   * 获取分类书单。结果中可不必包含书籍信息
+   */
+  categories(options: SeriesOptions): Promise<Series[]>;
+
+  /**
+   * 获取书单书籍
+   * @param seriesId 书单ID
+   * @param page 页码，从1开始
+   * @param options 其他选项
+   */
+  bookList(seriesId: string, page: number, options?: SeriesOptions): Promise<SeriesBookList>;
+
+  /**
+   * 抛出异常
+   * @param message 错误信息
+   * @throws {ProviderError}
+   */
+  throwError(message: string): never
+}
+
+/** 获取书单的选项，各数据源可按需支持 */
+export interface SeriesOptions {
+  /** 性别 */
+  gender?: 'male' | 'female' | null
+  /** 类别 */
+  categoryId?: string
+  /** 限定更新状态 */
+  state?: 'all' | 'serial' | 'finished'
 }

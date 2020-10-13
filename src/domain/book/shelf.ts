@@ -1,4 +1,4 @@
-import { RemoteSource } from "../resource-info"
+import { SourceLiteral } from "../resource-info"
 
 /**
  * 定义书架书籍。
@@ -13,7 +13,7 @@ export class ShelfBook {
     chapterIndex: number    //阅读进度
     readProgress: number    //当前章节阅读进度
     latestReadTime: number  //最近阅读时间
-    source: RemoteSource
+    source: SourceLiteral
     //用于类型验证
     static readonly empty: ShelfBook = Object.freeze({
         uid: '',
@@ -23,7 +23,7 @@ export class ShelfBook {
         chapterIndex: 0,
         readProgress: 0,
         latestReadTime: 0,
-        source: RemoteSource.Default
+        source: SourceLiteral.Default
     })
 }
 

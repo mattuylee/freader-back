@@ -1,10 +1,10 @@
-import { RemoteSource } from "./resource-info"
+import { SourceLiteral } from "./resource-info"
 
 /** 用户配置 */
 export class UserConfig {
   uid: string         //用户ID
   darkMode: boolean   //夜间模式
-  defaultSource: RemoteSource //默认数据源
+  defaultSource: SourceLiteral //默认数据源
   read: {
     fontSize: number    //字体大小
     lineSpace: number   //行间距，单位倍
@@ -18,7 +18,7 @@ export class UserConfig {
   static empty: UserConfig = Object.freeze({
     uid: '',
     darkMode: false,
-    defaultSource: RemoteSource.Default,
+    defaultSource: SourceLiteral.Default,
     read: {
       fontSize: 20,
       lineSpace: 1.5,
