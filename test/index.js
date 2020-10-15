@@ -1,10 +1,8 @@
-const assert = require('assert')
 const fs = require('fs')
 const path = require('path')
-const process = require('process')
 const superAgent = require('superagent')
+const superagentCharset = require('superagent-charset')
 const logger = require('../bin/log').logger
-const globalConfig = require('../bin/util/index').globalConfig
 
 var testConfig
 var token
@@ -15,12 +13,11 @@ async function run(shouldRun) {
     await app.run()
   }
   logger.trace('---测试开始---')
-  runTest().then(() => {
+  await runTest().then(() => {
     logger.info('---测试结束---')
-    process.exit(0)
   }).catch(e => {
-    logger.error('---测试失败---')
     logger.error(e.message ? e.message : e)
+    logger.error('---测试失败---')
   })
 }
 
@@ -33,25 +30,32 @@ async function runTest() {
     logger.fatal('Failed to run test: test config file not found.')
     return
   }
-  let hostname
-  if (testConfig.host && testConfig.port) {
-    hostname = testConfig.host + ':' + testConfig.port + testConfig.basePath
+  let baseUrl
+  if (testConfig.baseUrl) {
+    baseUrl = testConfig.baseUrl
+  }
+  else if (testConfig.host && testConfig.port) {
+    baseUrl = 'http://' + testConfig.host + ':' + testConfig.port + testConfig.basePath
   }
   else {
-    hostname = 'localhost:' + (testConfig.port ? testConfig.port : globalConfig.port) + testConfig.basePath
+    baseUrl = 'http://localhost:3280'
   }
-  if (hostname.endsWith('/')) { hostname = hostname.slice(0, hostname.length - 1) }
+  if (baseUrl.endsWith('/')) { baseUrl = baseUrl.slice(0, baseUrl.length - 1) }
   //执行登录，获取凭证
-  await superAgent.post(hostname + '/user/login').type('form').send({
-    uid: testConfig.user,
-    pwd: testConfig.password
-  }).then(async res => {
-    assertResult(res)
-    //执行测试用例
-    await runTests(testConfig.testCases, hostname)
-  })
-  return
+  const res = await superAgent.post(baseUrl + '/user/login')
+    .set('Content-Type', 'application/x-www-form-urlencoded')
+    .send({ uid: testConfig.user, pwd: testConfig.password })
+    .catch(e => {
+      logger.error("failed to login", e)
+    })
+  if (!res) {
+    return
+  }
+  assertResult(res)
+  //执行测试用例
+  await runTests(testConfig.testCases, baseUrl)
 }
+
 async function runTests(testcase, route = '') {
   if (!testcase || typeof testcase != 'object') { return }
   if (testcase.title) {
@@ -86,11 +90,15 @@ async function runTests(testcase, route = '') {
 
 //结果断言
 function assertResult(res) {
-  if (!res) { return }
-  assert.strictEqual(res.statusCode, 200)
-  assert.strictEqual(!res.body.code, true)
-  if (!res.body.error) { res.body.error = null }
-  assert.strictEqual(res.body.error, null)
+  if (res.statusCode !== 200) {
+    throw Error("request failed: " + res.statusCode + ' ' + res.statusMessage)
+  }
+  else if (!res.body) {
+    throw Error("empty response")
+  }
+  else if (!res.body.code || res.body.error) {
+    throw Error("the server returned an error: " + res.body.error)
+  }
   if (res.body.token) {
     token = res.body.token
     logger.debug('token changed: ', token)

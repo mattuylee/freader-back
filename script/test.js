@@ -31,7 +31,7 @@ else if (target.toLowerCase() === 'api') {
     console.error("未识别的参数：" + args[1])
     return
   }
-  require('../test/index').run(shouldRun)
+  require('../test/index').run(shouldRun).finally(() => process.exit(0))
 }
 else if (target.toLowerCase() === 'sources') {
   if (args.length > 1) {
