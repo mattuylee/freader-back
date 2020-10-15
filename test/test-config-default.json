@@ -142,6 +142,33 @@
                     "source": "X23usCom",
                     "bid": null
                 }
+            },
+            "/serieses": {
+              "title": "获取推荐书单",
+              "type": "route",
+              "get": {
+                "source": "Qidian",
+                "gender": "male"
+              }
+            },
+            "/categories": {
+              "title": "获取分类书单",
+              "type": "route",
+              "get": {
+                "source": "Qidian",
+                "gender": "male"
+              }
+            },
+            "/booklist": {
+              "title": "获取书单书籍",
+              "type": "route",
+              "get": {
+                "seriesId": "4",
+                "source": "Qidian",
+                "gender": "male",
+                "categoryId": "4",
+                "state": "finished"
+              }
             }
         }
     }

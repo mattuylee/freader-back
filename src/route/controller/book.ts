@@ -115,6 +115,83 @@ const router: Controller = {
       }]
     }]
   }, {
+    path: '/serieses',
+    requests: [{
+      method: 'get',
+      token: true,
+      description: '获取推荐书单',
+      invoke: BookService.getSerieses,
+      params: [{
+        from: 'query',
+        name: 'source',
+        type: 'string',
+        validation: { nullable: true }
+      }, {
+        from: 'query',
+        name: 'gender',
+        type: 'string',
+        validation: { nullable: true }
+      }]
+    }]
+  }, {
+    path: '/categories',
+    requests: [{
+      method: 'get',
+      token: true,
+      description: '获取分类书单',
+      invoke: BookService.getCategories,
+      params: [{
+        from: 'query',
+        name: 'source',
+        type: 'string',
+        validation: { nullable: true }
+      }, {
+        from: 'query',
+        name: 'gender',
+        type: 'string',
+        validation: { nullable: true }
+      }]
+    }]
+  }, {
+    path: '/booklist',
+    requests: [{
+      method: 'get',
+      token: true,
+      description: '获取书单书籍列表',
+      invoke: BookService.getCategories,
+      params: [{
+        from: 'query',
+        name: 'source',
+        type: 'string',
+        validation: { nullable: true }
+      }, {
+        from: 'query',
+        name: 'seriesId',
+        type: 'string',
+        validation: { nullable: false }
+      }, {
+        from: 'query',
+        name: 'page',
+        type: 'number',
+        validation: { nullable: true, valueType: 'number', min: 1 }
+      }, {
+        from: 'query',
+        name: 'gender',
+        type: 'string',
+        validation: { nullable: true }
+      }, {
+        from: 'query',
+        name: 'categoryId',
+        type: 'string',
+        validation: { nullable: true }
+      }, {
+        from: 'query',
+        name: 'state',
+        type: 'string',
+        validation: { nullable: true }
+      }]
+    }]
+  }, {
     path: '/sources',
     requests: [{
       method: 'get',

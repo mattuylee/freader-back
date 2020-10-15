@@ -1,6 +1,6 @@
 import { Result } from "../domain/result";
 import { instance as bookDao } from "../dao/book";
-import { SourceLiteral, RemoteSources } from "../domain/resource-info";
+import { SourceLiteral, RemoteSources, RemoteSource } from "../domain/resource-info";
 import { instance as x23usComProvider } from "./crawling/x23us-com";
 import { instance as qidian } from "./crawling/qidian-com";
 import { ResourceProvider } from "../domain/types/crawling";
@@ -167,9 +167,77 @@ export class BookService {
   }
 
   /**
+   * 获取推荐书单
+   * @param source 数据源
+   * @param gender 可选，性别
+   */
+  public async getSerieses(source: string, gender?: string) {
+    const provider = this.getResourceProvider(source)
+      , result = new Result()
+    source = provider.name
+    try {
+      const serieses = await provider.serieses({ gender: gender as any })
+      result.data = serieses
+    }
+    catch (e) {
+      handleError(e, provider.name)
+      result.code = 500
+      result.error = e.message
+    }
+    return result
+  }
+  /**
+   * 获取分类书单
+   * @param source 数据源
+   * @param gender 性别
+   */
+  public async getCategories(source: string, gender?: string) {
+    const provider = this.getResourceProvider(source)
+      , result = new Result()
+    source = provider.name
+    try {
+      const serieses = await provider.categories({ gender: gender as any })
+      result.data = serieses
+    }
+    catch (e) {
+      handleError(e, provider.name)
+      result.code = 500
+      result.error = e.message
+    }
+    return result
+  }
+
+  public async getBookList(
+    source: string,
+    seriesId: string,
+    page: number,
+    gender?: string,
+    categoryId?: string,
+    state?: string
+  ) {
+    const provider = this.getResourceProvider(source)
+      , result = new Result()
+    source = provider.name
+    try {
+      const serieses = await provider.bookList(seriesId, page, {
+        gender: gender as any,
+        categoryId,
+        state: state as any
+      })
+      result.data = serieses
+    }
+    catch (e) {
+      handleError(e, provider.name)
+      result.code = 500
+      result.error = e.message
+    }
+    return result
+  }
+
+  /**
    * 获取可用数据源
    */
-  public getAvailableSource() {
+  public async getAvailableSource(): Promise<Result<RemoteSource[]>> {
     return new Result(RemoteSources)
   }
 

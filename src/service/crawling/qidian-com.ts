@@ -13,7 +13,6 @@ const UA = 'Mozilla/5.0 (X11; Linux x86_64; rv:81.0) Gecko/20100101 Firefox/81.0
   , rankSupport = SeriesSupport.MultiPage | SeriesSupport.Gender | SeriesSupport.Category
   , categorySupport = SeriesSupport.MultiPage
     | SeriesSupport.Gender
-    | SeriesSupport.Category
     | SeriesSupport.FinishState
   , recommendSerieses = [{
     id: 'bestSelllist',
@@ -338,7 +337,10 @@ export class Qidian implements ResourceProvider {
       .query({ pageNum: page > 0 ? page : 1 })
       .query({ gender: options.gender === 'female' ? 'female' : 'male' })
       .timeout(10000)
-    if ((series.support & SeriesSupport.Category) && options.categoryId !== undefined) {
+    if (series.type === SeriesType.Category) {
+      req.query({ catId: series.id })
+    }
+    else if ((series.support & SeriesSupport.Category) && options.categoryId !== undefined) {
       req.query({ catId: options.categoryId })
     }
     if ((series.support & SeriesSupport.FinishState) && options.state) {
