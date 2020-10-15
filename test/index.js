@@ -14,7 +14,7 @@ async function run(shouldRun) {
   }
   logger.trace('---测试开始---')
   await runTest().then(() => {
-    logger.info('---测试结束---')
+    logger.info('---测试通过---')
   }).catch(e => {
     logger.error(e.message ? e.message : e)
     logger.error('---测试失败---')
@@ -96,7 +96,7 @@ function assertResult(res) {
   else if (!res.body) {
     throw Error("empty response")
   }
-  else if (!res.body.code || res.body.error) {
+  else if (res.body.code || res.body.error) {
     throw Error("the server returned an error: " + res.body.error)
   }
   if (res.body.token) {
