@@ -1,6 +1,7 @@
-import { Book, Series, SeriesBookList } from "../book/book";
+import { Book } from "../book/book";
 import { ResourceInformation } from "../resource-info";
 import { Chapter } from "../book/chapter";
+import { Series, SeriesBookList, SeriesOptions } from "../book/series";
 
 /**
  * 定义远程数据提供者（数据源）接口
@@ -64,14 +65,4 @@ export interface ResourceProvider {
    * @throws {ProviderError}
    */
   throwError(message: string): never
-}
-
-/** 获取书单的选项，各数据源可按需支持 */
-export interface SeriesOptions {
-  /** 性别 */
-  gender?: 'male' | 'female' | null
-  /** 类别 */
-  categoryId?: string
-  /** 限定更新状态 */
-  state?: 'all' | 'serial' | 'finished'
 }

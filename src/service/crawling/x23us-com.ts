@@ -6,8 +6,9 @@ import { Book, InfoLevel, UpdateStatus } from "../../domain/book/book";
 import { Chapter } from '../../domain/book/chapter';
 import { ProviderError } from '../../domain/exception';
 import { ResourceInformation, SourceLiteral } from "../../domain/resource-info";
-import { ResourceProvider, SeriesOptions } from "../../domain/types/crawling";
+import { ResourceProvider } from "../../domain/types/crawling";
 import { logger } from '../../log/index';
+import { SeriesOptions } from '../../domain/book/series';
 
 //add request.Request.prototype.charset
 require('superagent-charset')(superAgent)

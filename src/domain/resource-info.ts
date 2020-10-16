@@ -29,13 +29,15 @@ export interface RemoteSource {
 
 /** 数据源支持的功能，可通过按位或运算叠加 */
 export enum SourceSupport {
-  None = 0x0,
+  None = 0b0,
   //是否支持搜索
-  Search = 0x00000001,
+  Search = 0b00000001,
   //是否支持分类浏览
-  Category = 0x00000010,
+  Category = 0b00000010,
   //是否有排行榜
-  Rank = 0x00000100,
+  Rank = 0b00000100,
+  //是否支持推荐书单
+  Recommend = 0b00001000
 }
 
 /** 远程数据源列表 */

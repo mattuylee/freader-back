@@ -1,11 +1,11 @@
 import * as cheerio from 'cheerio';
 import * as superAgent from 'superagent';
-import { isNumber } from 'util';
-import { Book, InfoLevel, Series, SeriesBookList, SeriesSupport, SeriesType, UpdateStatus } from "../../domain/book/book";
+import { Book, InfoLevel, UpdateStatus } from "../../domain/book/book";
+import { Series, SeriesBookList, SeriesSupport, SeriesType, SeriesOptions } from '../../domain/book/series';
 import { Chapter } from '../../domain/book/chapter';
 import { ProviderError } from '../../domain/exception';
 import { SourceLiteral, ResourceInformation } from "../../domain/resource-info";
-import { ResourceProvider, SeriesOptions } from "../../domain/types/crawling";
+import { ResourceProvider } from "../../domain/types/crawling";
 import { logger } from '../../log/index';
 
 const UA = 'Mozilla/5.0 (X11; Linux x86_64; rv:81.0) Gecko/20100101 Firefox/81.0'
