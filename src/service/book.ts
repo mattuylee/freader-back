@@ -252,6 +252,7 @@ export class BookService {
       case SourceLiteral.X23usCom:
         return x23usComProvider
       case SourceLiteral.Qidian:
+        return qidian
       case SourceLiteral.Default:
       default:
         return noDefault ? null : qidian
