@@ -1,13 +1,13 @@
-import { Result } from "../domain/result";
-import { instance as bookDao } from "../dao/book";
-import { SourceLiteral, RemoteSources, RemoteSource } from "../domain/resource-info";
-import { instance as x23usComProvider } from "./crawling/x23us-com";
 import { instance as qidian } from "./crawling/qidian-com";
-import { ResourceProvider } from "../domain/types/crawling";
+import { instance as x23usComProvider } from "./crawling/x23us-com";
+import { instance as bookDao } from "../dao/book";
 import { Book, InfoLevel } from "../domain/book/book";
-import { logger } from '../log/index'
 import { Chapter } from "../domain/book/chapter";
-import * as util from '../util/index'
+import { RemoteSource, RemoteSources, SourceLiteral } from "../domain/resource-info";
+import { Result } from "../domain/result";
+import { ResourceProvider } from "../domain/types/crawling";
+import { logger } from "../log/index";
+import * as util from "../util/index";
 
 /**
  * 处理数据源抛出的异常。如果错误是数据源主动抛出（Error.name等于数据源的名称）则打印错
@@ -178,6 +178,10 @@ export class BookService {
     try {
       const serieses = await provider.serieses({ gender: gender as any })
       result.data = serieses
+      const books = (serieses || [])
+        .map(s => s.books || [])
+        .reduce((prev, curr) => [...prev, ...curr])
+      for (const book of books) { bookDao.updateBook(book) }
     }
     catch (e) {
       handleError(e, provider.name)
@@ -219,12 +223,13 @@ export class BookService {
       , result = new Result()
     source = provider.name
     try {
-      const serieses = await provider.bookList(seriesId, page, {
+      const bookList = await provider.bookList(seriesId, page, {
         gender: gender as any,
         categoryId,
         state: state as any
       })
-      result.data = serieses
+      result.data = bookList
+      for (const book of bookList && bookList.books || []) { bookDao.updateBook(book) }
     }
     catch (e) {
       handleError(e, provider.name)
