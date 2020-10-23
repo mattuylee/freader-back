@@ -1,24 +1,22 @@
+import _globalConfig = require("./global-config");
+export const globalConfig = _globalConfig;
 
-import _globalConfig = require('./global-config');
-export const globalConfig = _globalConfig
+import trim = require("./entity-trimer");
+export const trimEntity = trim;
 
-import trim = require('./entity-trimer')
-export const trimEntity = trim
+import _filter = require("./response-filter");
+export const filterResponse = _filter;
 
-import _filter = require('./response-filter');
-export const filterResponse = _filter
+import _setPrototype = require("./prototype-setter");
+export const setPrototype = _setPrototype;
 
-import _setPrototype = require('./prototype-setter');
-export const setPrototype = _setPrototype
+import _validate = require("./validatior");
+export const validate = _validate;
 
-import _validate = require('./validatior');
-export const validate = _validate
-
-import { _createRandomCode, _hash } from './random-encoder'
-import { InfoLevel } from '../domain/book/book';
-export const createRandomCode = _createRandomCode
-export const hash = _hash
-
+import { _createRandomCode, _hash } from "./random-encoder";
+import { InfoLevel } from "../domain/book/book";
+export const createRandomCode = _createRandomCode;
+export const hash = _hash;
 
 /**
  * 格式化时间
@@ -30,18 +28,32 @@ export const hash = _hash
  * @param format.englishDate YYYY-MM-DD
  */
 export function formatTime(time, format: string) {
-  let t = new Date(time)
+  let t = new Date(time);
   switch (format) {
-    case 'chineseFull':
-      return `${t.getFullYear()}年${t.getMonth() + 1}月${t.getDate()}日 ${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}:${String(t.getSeconds()).padStart(2, '0')}`
-    case 'chineseDate':
-      return `${t.getFullYear()}年${t.getMonth() + 1}月${t.getDate()}日`
-    case 'englishFull':
-      return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')} ${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}:${String(t.getSeconds()).padStart(2, '0')}`
-    case 'englishDate':
-      return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`
+    case "chineseFull":
+      return `${t.getFullYear()}年${
+        t.getMonth() + 1
+      }月${t.getDate()}日 ${String(t.getHours()).padStart(2, "0")}:${String(
+        t.getMinutes()
+      ).padStart(2, "0")}:${String(t.getSeconds()).padStart(2, "0")}`;
+    case "chineseDate":
+      return `${t.getFullYear()}年${t.getMonth() + 1}月${t.getDate()}日`;
+    case "englishFull":
+      return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(
+        2,
+        "0"
+      )}-${String(t.getDate()).padStart(2, "0")} ${String(
+        t.getHours()
+      ).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}:${String(
+        t.getSeconds()
+      ).padStart(2, "0")}`;
+    case "englishDate":
+      return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(
+        2,
+        "0"
+      )}-${String(t.getDate()).padStart(2, "0")}`;
     default:
-      return t.toString()
+      return t.toString();
   }
 }
 
@@ -51,12 +63,21 @@ export function formatTime(time, format: string) {
  * @param target 要满足的信息级别
  * @return {boolean} 是否满足
  */
-export function isInfoLevelEnough(level: InfoLevel, target: InfoLevel): boolean {
-  const levels = [InfoLevel.None, InfoLevel.Meta, InfoLevel.Search, InfoLevel.Detail, InfoLevel.All]
-    , index = levels.indexOf(level)
-    , targetIndex = levels.indexOf(target)
+export function isInfoLevelEnough(
+  level: InfoLevel,
+  target: InfoLevel
+): boolean {
+  const levels = [
+      InfoLevel.None,
+      InfoLevel.Meta,
+      InfoLevel.Search,
+      InfoLevel.Detail,
+      InfoLevel.All,
+    ],
+    index = levels.indexOf(level),
+    targetIndex = levels.indexOf(target);
   if (index === -1 || targetIndex === -1) {
-    return false
+    return false;
   }
-  return index >= targetIndex
+  return index >= targetIndex;
 }

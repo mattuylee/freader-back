@@ -1,15 +1,15 @@
 {
-    "baseRoute": "/",
-    "port": 3280,
-    "mode": "develop",
-    "database": {
-        "url": "mongodb://localhost:27017",
-        "name": "freader"
-    },
-    "cron": {
-        "enabled": true,
-        "minUpdatePeriod": 86400,
-        "checkPeriod": 86400,
-        "initialTime": "1998-07-05 03:00:00 GMT+0800"
-    }
+  "baseRoute": "/",
+  "port": 3280,
+  "mode": "develop",
+  "database": {
+    "url": "mongodb://localhost:27017",
+    "name": "freader"
+  },
+  "cron": {
+    "enabled": true,
+    "minUpdatePeriod": 86400,
+    "checkPeriod": 86400,
+    "initialTime": "1998-07-05 03:00:00 GMT+0800"
+  }
 }

@@ -1,1 +1,1 @@
-require('./app.js').run()
+require("./app.js").run();

@@ -4,17 +4,21 @@
  * @param values 可选，要去除的值列表，默认为[undefined]
  */
 function _trim(target, values = [undefined]) {
-    if (typeof target !== 'object') { return target }
-    if (!Array.isArray(values)) { values = [undefined] }
-    for (const key in target) {
-        for (let value of values) {
-            if (target[key] === value) {
-                delete target[key]
-                break
-            }
-        }
+  if (typeof target !== "object") {
+    return target;
+  }
+  if (!Array.isArray(values)) {
+    values = [undefined];
+  }
+  for (const key in target) {
+    for (let value of values) {
+      if (target[key] === value) {
+        delete target[key];
+        break;
+      }
     }
-    return target
+  }
+  return target;
 }
 
-module.exports = _trim
+module.exports = _trim;
