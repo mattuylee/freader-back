@@ -1,6 +1,11 @@
+import { Book, InfoLevel, UpdateStatus } from "../../domain/book/book";
+import { Chapter } from "../../domain/book/chapter";
+import { ProviderError } from "../../domain/exception";
+import { ResourceInformation, SourceLiteral } from "../../domain/resource-info";
+import { ResourceProvider } from "../../domain/types/crawling";
+import { logger } from "../../log/index";
 import * as cheerio from "cheerio";
 import * as superAgent from "superagent";
-import { Book, InfoLevel, UpdateStatus } from "../../domain/book/book";
 import {
   Series,
   SeriesBookList,
@@ -8,11 +13,6 @@ import {
   SeriesType,
   SeriesOptions,
 } from "../../domain/book/series";
-import { Chapter } from "../../domain/book/chapter";
-import { ProviderError } from "../../domain/exception";
-import { SourceLiteral, ResourceInformation } from "../../domain/resource-info";
-import { ResourceProvider } from "../../domain/types/crawling";
-import { logger } from "../../log/index";
 
 const UA =
     "Mozilla/5.0 (X11; Linux x86_64; rv:81.0) Gecko/20100101 Firefox/81.0",
@@ -197,7 +197,7 @@ export class Qidian implements ResourceProvider {
       this.throwError("无效的数据源", "详情页数据缺失", this.detail.name);
     }
     try {
-      const books = await this.search(data.name + " " + data.author),
+      const books = await this.search(data.name),
         book = books.find((b) => b.bid === bid);
       book.infoLevel = InfoLevel.Detail;
       return book;
@@ -206,6 +206,7 @@ export class Qidian implements ResourceProvider {
         e.name = this.detail.name;
         throw e;
       }
+      logger.error(e);
       this.throwError(
         "未找到相关书籍信息，请尝试重新搜索书籍",
         null,

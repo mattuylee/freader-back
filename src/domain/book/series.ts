@@ -43,7 +43,7 @@ export enum SeriesSupport {
   //是否支持根据更新状态筛选
   FinishState = 0b00001000,
 }
-/** 获取书单的选项，各数据源可按需支持 */
+/** 获取书单书籍的选项，各数据源可按需支持 */
 export interface SeriesOptions {
   /** 性别 */
   gender?: "male" | "female" | null;

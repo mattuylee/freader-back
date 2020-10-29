@@ -71,8 +71,7 @@ export class BookService {
     } else if (book.source !== source) {
       //换源，且目标源本地数据中不存在该书籍，搜索书籍
       try {
-        const books =
-          (await provider.search(book.name + " " + book.author)) || [];
+        const books = (await provider.search(book.name)) || [];
         book = books.find((b) => b.bid === book.bid);
       } catch {
         result.code = 500;
