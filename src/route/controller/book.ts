@@ -187,7 +187,7 @@ const router: Controller = {
           method: "get",
           token: true,
           description: "获取书单书籍列表",
-          invoke: BookService.getCategories,
+          invoke: BookService.getBookList,
           params: [
             {
               from: "query",
