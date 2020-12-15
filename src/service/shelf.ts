@@ -12,7 +12,7 @@ export class ShelfService {
    * @param bid 书籍ID
    */
   async getShelfBooks(token: string, gid?: string, bid?: string) {
-    let user = await userDao.getUser({ token: token });
+    let user = await userDao.getUser(util.jwtTokenToUserID(token));
     if (bid) {
       gid = undefined;
     }
@@ -26,7 +26,7 @@ export class ShelfService {
    * @param shelf 书架书籍信息
    */
   async updateShelfBook(token: string, shelf: ShelfBook) {
-    let user = await userDao.getUser({ token: token });
+    let user = await userDao.getUser(util.jwtTokenToUserID(token));
     shelf.uid = user.uid;
     let updateResult = await shelfDao.updateShelfBook(shelf);
     let result = new Result();
@@ -42,7 +42,7 @@ export class ShelfService {
    * @param bid 书籍ID
    */
   async removeShelfBook(token: string, bid: string) {
-    let user = await userDao.getUser({ token: token });
+    let user = await userDao.getUser(util.jwtTokenToUserID(token));
     await shelfDao.removeShelfBook(user.uid, bid);
     return new Result();
   }
@@ -52,7 +52,7 @@ export class ShelfService {
    * @param gid 分组ID
    */
   async getShelfBookGroups(token: string, gid?: string) {
-    let user = await userDao.getUser({ token: token });
+    let user = await userDao.getUser(util.jwtTokenToUserID(token));
     return new Result(await shelfDao.getShelfBookGroups(user.uid, gid));
   }
   /**
@@ -62,7 +62,7 @@ export class ShelfService {
    */
   async updateShelfBookGroup(token: string, group: ShelfBookGroup) {
     const result = new Result();
-    let user = await userDao.getUser({ token: token });
+    let user = await userDao.getUser(util.jwtTokenToUserID(token));
     group.uid = user.uid;
     const isCreate = !group.gid;
     if (!group.gid) {
@@ -92,7 +92,7 @@ export class ShelfService {
    * @param gid 分组ID
    */
   async removeShelfBookGroup(token: string, gid: string) {
-    let user = await userDao.getUser({ token: token });
+    let user = await userDao.getUser(util.jwtTokenToUserID(token));
     await shelfDao.removeShelfBookGroup(user.uid, gid);
     return new Result();
   }

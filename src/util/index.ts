@@ -1,22 +1,17 @@
-import _globalConfig = require("./global-config");
-export const globalConfig = _globalConfig;
-
-import trim = require("./entity-trimer");
-export const trimEntity = trim;
-
-import _filter = require("./response-filter");
-export const filterResponse = _filter;
-
-import _setPrototype = require("./prototype-setter");
-export const setPrototype = _setPrototype;
-
-import _validate = require("./validatior");
-export const validate = _validate;
-
-import { _createRandomCode, _hash } from "./random-encoder";
 import { InfoLevel } from "../domain/book/book";
-export const createRandomCode = _createRandomCode;
-export const hash = _hash;
+export { createRandomCode, hash } from "./random-encoder";
+export { defaultGlobalConfig as globalConfig } from "./global-config";
+export { filter as filterResponse } from "./response-filter";
+export { setPrototype } from "./prototype-setter";
+export { trim as trimEntity } from "./entity-trimer";
+export { validate } from "./validatior";
+export {
+  jwtCreateToken,
+  jwtSecret,
+  jwtShouldUpdate,
+  jwtTokenToUserID,
+  jwtVerify,
+} from "./jwt";
 
 /**
  * 格式化时间

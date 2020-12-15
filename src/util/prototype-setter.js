@@ -7,7 +7,7 @@ const ResponseFilter = require("./response-filter").responseFilter;
  * @param prototype 对象的prototype
  * @return {any} 目标对象
  */
-function _setPrototype(target, prototype) {
+function setPrototype(target, prototype) {
   if (!target || typeof target !== "object") {
     return target;
   }
@@ -15,4 +15,4 @@ function _setPrototype(target, prototype) {
   return target;
 }
 
-module.exports = _setPrototype;
+module.exports = { setPrototype };

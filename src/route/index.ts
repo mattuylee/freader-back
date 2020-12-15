@@ -1,11 +1,11 @@
 import * as express from "express";
 import * as fs from "fs";
 import * as path from "path";
-import * as util from "../util/index";
+import { Result } from "../domain/result";
 import { Controller } from "../domain/types/route";
 import { logger } from "../log/index";
-import { Result } from "../domain/result";
 import { instance as userService } from "../service/user";
+import * as util from "../util/index";
 
 const router = express.Router();
 const root = path.resolve(__dirname, "controller");
@@ -91,7 +91,21 @@ function applyRoute(router, controller: Controller) {
         }
         //调用service
         try {
-          let asyncResult = await callback.apply(thisObject, params);
+          let asyncResult: Result<any> = await callback.apply(
+            thisObject,
+            params
+          );
+          if (
+            request.token &&
+            asyncResult &&
+            !asyncResult.code &&
+            !asyncResult.error &&
+            util.jwtShouldUpdate(<string>req.headers.token)
+          ) {
+            // 更新token（如有必要）
+            const r = await userService.updateToken(<string>req.headers.token);
+            asyncResult.token = r.token || asyncResult.token;
+          }
           res.json(util.filterResponse(asyncResult));
         } catch (e) {
           let result = new Result();

@@ -1,8 +1,7 @@
 import { Db } from "mongodb";
-
-import * as util from "../util/index";
-import { User } from "../domain/user";
 import { UserConfig } from "../domain/config";
+import { User } from "../domain/user";
+import * as util from "../util/index";
 import { db } from "./index";
 
 const userCollection = (<Db>db).collection("user");
@@ -13,49 +12,43 @@ const configCollection = (<Db>db).collection("uconfig");
  */
 export class UserDao {
   /**
-   * 更新会话ID（token）
-   * @param _token 原token
-   * @returns 新token，失败返回原token
+   * 更新加密salt
+   * @param uid 用户ID
+   * @returns 新salt
    */
-  async updateToken(_token: string): Promise<string> {
-    const token = util.createRandomCode(32);
+  async updateSalt(uid: string): Promise<boolean> {
+    const salt = util.createRandomCode(32);
     const res = await userCollection.updateOne(
-      { token: _token },
-      { $set: { token: token } }
+      { uid: uid },
+      { $set: { salt: salt } }
     );
-    return res.result.ok ? token : _token;
+    return !!res.result.ok;
   }
   /** 登录 */
   async login(uid: string, pwd: string): Promise<User> {
-    let token = util.createRandomCode(32);
-    //登录更新token
-    let result = await userCollection.findOneAndUpdate(
+    let user = await userCollection.findOne<User>(
       { uid: uid, password: pwd },
-      { $set: { token: token } },
-      { returnOriginal: false, projection: { _id: false } }
+      { projection: { _id: false, token: false } }
     );
-    return result.value;
-  }
-  /** 获取用户信息 */
-  async getUser(filter: object | string): Promise<User> {
-    if (!filter) {
+    if (!user) {
       return null;
     }
-    if (typeof filter == "string") {
-      filter = { uid: filter };
+    if (!user.salt) {
+      user.salt = util.createRandomCode(32);
+      await userCollection.findOneAndUpdate(
+        { uid: uid },
+        { $set: { salt: user.salt } }
+      );
     }
-    let user = await userCollection.findOne(filter, {
-      projection: { _id: false },
-    });
-    util.setPrototype(user, User.prototype);
     return user;
   }
-  /**
-   * 根据token获取用户
-   * @deprecated 请使用@function getUser()
-   */
-  async getUserByToken(token: string): Promise<User> {
-    let user = await userCollection.findOne({ token: token });
+  /** 获取用户信息 */
+  async getUser(uid: string, withPassword: boolean = false): Promise<User> {
+    const projection = { _id: false, token: false };
+    if (!withPassword) {
+      projection["password"] = false;
+    }
+    let user = await userCollection.findOne({ uid }, { projection });
     util.setPrototype(user, User.prototype);
     return user;
   }

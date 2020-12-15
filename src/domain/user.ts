@@ -7,7 +7,10 @@ export class User {
   nickName: string; //昵称
   referrer: string; //推荐人ID
   userGroup: UserGroup; //用户组
-  token: string; //用户当前会话ID
+  /** @serveronly */
+  salt?: string; //web token加密用的salt
+  /** @deprecated */
+  token?: string; //用户当前会话ID
   // 用于类型验证的对象
   static readonly empty: User = Object.freeze({
     uid: "",
@@ -15,7 +18,6 @@ export class User {
     nickName: "",
     referrer: "",
     userGroup: "" as UserGroup,
-    token: "",
   });
 }
 

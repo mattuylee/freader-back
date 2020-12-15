@@ -24,5 +24,7 @@ function hash(data) {
   return crypto.createHash("md5").update(data).digest("hex");
 }
 
-module.exports._createRandomCode = createRandomCode;
-module.exports._hash = hash;
+module.exports = {
+  createRandomCode,
+  hash,
+};

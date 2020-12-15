@@ -3,7 +3,7 @@
  * @param target 目标对象
  * @param values 可选，要去除的值列表，默认为[undefined]
  */
-function _trim(target, values = [undefined]) {
+function trim(target, values = [undefined]) {
   if (typeof target !== "object") {
     return target;
   }
@@ -21,4 +21,4 @@ function _trim(target, values = [undefined]) {
   return target;
 }
 
-module.exports = _trim;
+module.exports = { trim };

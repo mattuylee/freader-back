@@ -3,7 +3,7 @@ import { instance as cronDao } from "../dao/cron";
 import { instance as bookDao } from "../dao/book";
 import { instance as bookService } from "./book";
 import { UpdateStatus } from "../domain/book/book";
-import { globalConfig } from "../util";
+import { globalConfig } from "../util/index";
 import * as util from "../util/index";
 
 /**

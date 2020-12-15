@@ -1,4 +1,3 @@
-const fs = require("fs");
 const path = require("path");
 const logger = require("../log/index").logger;
 
@@ -38,4 +37,4 @@ try {
   logger.warn("Failed to load config file, and the default config is used.");
 }
 
-module.exports = defaultGlobalConfig;
+module.exports = { defaultGlobalConfig };

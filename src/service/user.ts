@@ -1,26 +1,33 @@
-import * as util from "../util/index";
+import { instance as userDao } from "../dao/user";
+import { UserConfig } from "../domain/config";
 import { Result } from "../domain/result";
 import { User, UserGroup } from "../domain/user";
-import { UserConfig } from "../domain/config";
-import { instance as userDao } from "../dao/user";
+import * as util from "../util/index";
+import * as jwt from "../util/jwt";
 
 /**
  * 用户验证相关的逻辑
  */
 export class UserService {
-  /** 判断token是否合法。如果非法返回的Promise将被reject */
-  assertToken(token: string): Promise<never> {
-    return new Promise(async (resolve, reject) => {
-      if (await userDao.userExists({ token: token })) {
-        resolve();
-      } else {
-        let result = new Result();
-        result.code = 403;
-        result.error = "认证失败";
-        result.needLogin = true;
-        reject(result);
-      }
-    });
+  /** 判断token是否合法。 */
+  async assertToken(token: string): Promise<never> {
+    const uid = util.jwtTokenToUserID(token);
+    if (uid) {
+      const user = await userDao.getUser(uid);
+      try {
+        if (
+          user &&
+          util.jwtVerify(token, util.jwtSecret(uid, user.password, user.salt))
+        ) {
+          return;
+        }
+      } catch {}
+    }
+    const result = new Result();
+    result.code = 403;
+    result.error = "认证失败";
+    result.needLogin = true;
+    throw result;
   }
 
   /**
@@ -29,7 +36,20 @@ export class UserService {
    */
   async updateToken(token: string): Promise<Result> {
     const result = new Result();
-    result.token = await userDao.updateToken(token);
+    if (util.jwtShouldUpdate(token)) {
+      const uid = util.jwtTokenToUserID(token);
+      const user = await userDao.getUser(uid);
+      if (!user) {
+        result.code = 401;
+        result.error = "认证失败";
+        return result;
+      }
+      result.token = jwt.jwtCreateToken(
+        jwt.jwtSecret(uid, user.password, user.salt)
+      );
+    } else {
+      result.token = token;
+    }
     return result;
   }
   /**
@@ -38,7 +58,7 @@ export class UserService {
    * @param uid 要获取的用户的ID
    */
   async getUserInfo(token: string, uid?: string): Promise<Result<User>> {
-    const user = await userDao.getUser({ token: token });
+    const user = await userDao.getUser(util.jwtTokenToUserID(token));
     let result = new Result();
     if (!user || !uid || user.uid == uid) {
       if (!user) {
@@ -53,7 +73,7 @@ export class UserService {
     if (user.userGroup != UserGroup.Admin) {
       result.error = "权限不足";
     } else {
-      result.data = await userDao.getUser({ uid: uid });
+      result.data = await userDao.getUser(uid);
       if (!result.data) {
         result.error = "用户不存在";
       }
@@ -66,7 +86,7 @@ export class UserService {
    * @param userinfo 要更新的用户信息
    */
   async updateUserInfo(token: string, userinfo: User): Promise<Result> {
-    const user = await userDao.getUser({ token: token });
+    const user = await userDao.getUser(util.jwtTokenToUserID(token));
     let result = new Result();
     if (!userinfo || typeof userinfo != "object") {
       return result;
@@ -118,7 +138,8 @@ export class UserService {
     let result = new Result();
     if (user) {
       result.data = user;
-      result.token = user.token;
+      const secret = util.jwtSecret(uid, password, user.salt);
+      result.token = util.jwtCreateToken(uid, secret);
     } else {
       result.error = "用户名或密码错误";
     }
@@ -137,19 +158,23 @@ export class UserService {
     if (result.error) {
       return result;
     }
-    let referrer = await userDao.getUser({ token: referrerToken });
-    if (!referrer && !(await userDao.userExists())) {
+    // todo: 增加推荐人字段
+    let referrer = true;
+    if (!referrer) {
       result.error = "邀请码已失效";
       return result;
-    } else if (await userDao.getUser(user.uid)) {
+    }
+    if (await userDao.getUser(user.uid)) {
       result.error = "用户名已存在";
       return result;
     }
     if (!user.nickName) {
       user.nickName = user.uid;
     }
-    user.referrer = referrer ? referrer.uid : null;
-    user.userGroup = user.referrer ? UserGroup.User : UserGroup.Admin;
+    user.salt = util.createRandomCode(32);
+    // todo: 记录推荐人
+    user.referrer = null;
+    user.userGroup = UserGroup.User;
     if (!(await userDao.insertUser(user)).result.ok) {
       result.error = "数据库错误";
     } else {
@@ -160,7 +185,7 @@ export class UserService {
   /** 获取用户配置 */
   async getConfig(token: string): Promise<Result<UserConfig>> {
     let result = new Result();
-    const user = await userDao.getUser({ token: token });
+    const user = await userDao.getUser(util.jwtTokenToUserID(token));
     if (!user) {
       result.error = "认证失败";
       result.needLogin = true;
@@ -174,7 +199,7 @@ export class UserService {
     if (!config) {
       return new Result();
     }
-    const user = await userDao.getUser({ token: token });
+    const user = await userDao.getUser(util.jwtTokenToUserID(token));
     const result = new Result();
     if (!user) {
       result.error = "认证失败";

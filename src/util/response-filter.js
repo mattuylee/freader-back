@@ -41,6 +41,10 @@ function filterOrigin(data, depth) {
     if (data instanceof User && key == "password") {
       continue;
     }
+    //加密“salt”
+    else if (data instanceof User && key == "salt") {
+      continue;
+    }
     //书籍
     if (
       data instanceof Book &&
@@ -60,4 +64,4 @@ function filterOrigin(data, depth) {
   return copy;
 }
 
-module.exports = _filter;
+module.exports = { filter };

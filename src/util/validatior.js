@@ -5,7 +5,7 @@ const assert = require("assert");
  * @param {ValidateOption} options 验证选项
  * @return {boolean} 验证是否通过
  */
-function _validate(value, options) {
+function validate(value, options) {
   if (!options) {
     options = {};
   }
@@ -135,4 +135,4 @@ function objectTypeValidate(target, reference) {
   return true;
 }
 
-module.exports = _validate;
+module.exports = { validate };
