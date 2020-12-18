@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 module.exports.run = async function () {
   //加载全局配置
-  const globalConfig = require("./util/global-config");
+  const { defaultGlobalConfig: globalConfig } = require("./util/global-config");
   //配置日志级别
   logger.useDevelop();
   if (/^product(ion)?$/.test(globalConfig.mode)) {

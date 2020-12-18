@@ -13,7 +13,7 @@ const MAX_DEPTH = 10;
  * @param data 被过滤的对象
  * @return 过滤后的对象
  */
-function _filter(data) {
+function filter(data) {
   return filterOrigin(data, 0);
 }
 

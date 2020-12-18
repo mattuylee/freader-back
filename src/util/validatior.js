@@ -100,12 +100,12 @@ function validate(value, options) {
 function specifiedValidate(value, type) {
   switch (type) {
     case "name":
-      return _validate(value, {
+      return validate(value, {
         nullable: false,
         pattern: /^[-_0-9a-zA-Z\u4e00-\u9fbb]{2,16}$/,
       });
     case "password":
-      return _validate(value, {
+      return validate(value, {
         nullable: false,
         pattern: /^[!-~]{2,18}$/,
       });

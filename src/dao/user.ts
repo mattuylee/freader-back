@@ -40,6 +40,7 @@ export class UserDao {
         { $set: { salt: user.salt } }
       );
     }
+    util.setPrototype(user, User.prototype);
     return user;
   }
   /** 获取用户信息 */

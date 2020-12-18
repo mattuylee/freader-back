@@ -13,7 +13,7 @@ export class UserService {
   async assertToken(token: string): Promise<never> {
     const uid = util.jwtTokenToUserID(token);
     if (uid) {
-      const user = await userDao.getUser(uid);
+      const user = await userDao.getUser(uid, true);
       try {
         if (
           user &&
@@ -24,7 +24,7 @@ export class UserService {
       } catch {}
     }
     const result = new Result();
-    result.code = 403;
+    result.code = 401;
     result.error = "认证失败";
     result.needLogin = true;
     throw result;
@@ -38,7 +38,7 @@ export class UserService {
     const result = new Result();
     if (util.jwtShouldUpdate(token)) {
       const uid = util.jwtTokenToUserID(token);
-      const user = await userDao.getUser(uid);
+      const user = await userDao.getUser(uid, true);
       if (!user) {
         result.code = 401;
         result.error = "认证失败";

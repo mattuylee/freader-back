@@ -14,7 +14,7 @@ function jwtSecret(uid, password, salt) {
     .digest("hex");
 }
 function jwtCreateToken(uid, secret) {
-  return jwt.sign({ uid }, secret, { expiresIn: "30d" });
+  return jwt.sign({ uid }, secret, { expiresIn: "30d", noTimestamp: true });
 }
 function jwtTokenToUserID(token) {
   const payload = jwt.decode(token);
