@@ -9,8 +9,13 @@ const childProcess = require("child_process"),
 可用的数据源（不区分大小写）：
 * Qidian
 * X23usCom
+* FqxsOrg
 `.trim(),
-  sources = { qidian: "qidian.js", x23uscom: "x23us-com.js" },
+  sources = {
+    qidian: "qidian.js",
+    x23uscom: "x23us-com.js",
+    fqxsorg: "fqxs-org.js",
+  },
   args = process.argv.slice(2);
 
 if (args.length === 0) {
