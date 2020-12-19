@@ -1,14 +1,14 @@
+import * as cheerio from "cheerio";
 import * as iconv from "iconv-lite";
-import * as superAgent from "superagent";
-import cheerio = require("cheerio");
 import * as path from "path";
+import * as superAgent from "superagent";
 import { Book, InfoLevel, UpdateStatus } from "../../domain/book/book";
 import { Chapter } from "../../domain/book/chapter";
+import { SeriesOptions } from "../../domain/book/series";
 import { ProviderError } from "../../domain/exception";
 import { ResourceInformation, SourceLiteral } from "../../domain/resource-info";
 import { ResourceProvider } from "../../domain/types/crawling";
 import { logger } from "../../log/index";
-import { SeriesOptions } from "../../domain/book/series";
 
 //add request.Request.prototype.charset
 require("superagent-charset")(superAgent);
@@ -267,23 +267,6 @@ export class X23usCom implements ResourceProvider {
     } else if (!response.text) {
       this.throwError("数据源请求异常", "服务器返回了空响应体", caller);
     }
-  }
-  //将字数转化为更易读的形式
-  private _humanizeWordCount(count: number): string {
-    if (count <= 10000) {
-      return count + "字";
-    }
-    count /= 10000;
-    let words: string;
-    if (count < 10) {
-      words = count.toFixed(1).toString();
-    } else {
-      words = count.toFixed(0).toString();
-    }
-    while (/\.0*$/.test(words)) {
-      words = words.slice(0, words.length - 1);
-    }
-    return words + "万字";
   }
 }
 

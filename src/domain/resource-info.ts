@@ -17,6 +17,7 @@ export enum SourceLiteral {
   Default = "Default",
   Qidian = "Qidian", //起点
   X23usCom = "X23usCom", //顶点小说x23us.com
+  FqxsOrg = "FqxsOrg", //西红柿小说
 }
 
 /** 定义一个数据源 */
@@ -43,14 +44,20 @@ export enum SourceSupport {
 /** 远程数据源列表 */
 export const RemoteSources: RemoteSource[] = [
   {
-    source: "Qidian",
+    source: SourceLiteral.Qidian,
     name: "起点",
     vip: true,
     support: SourceSupport.Search | SourceSupport.Category | SourceSupport.Rank,
   },
   {
-    source: "X23usCom",
+    source: SourceLiteral.X23usCom,
     name: "顶点",
+    vip: false,
+    support: SourceSupport.Search,
+  },
+  {
+    source: SourceLiteral.FqxsOrg,
+    name: "西红柿小说网",
     vip: false,
     support: SourceSupport.Search,
   },

@@ -1,17 +1,18 @@
-import { instance as qidian } from "./crawling/qidian-com";
-import { instance as x23usComProvider } from "./crawling/x23us-com";
 import { instance as bookDao } from "../dao/book";
 import { Book, InfoLevel } from "../domain/book/book";
 import { Chapter } from "../domain/book/chapter";
+import { Result } from "../domain/result";
+import { ResourceProvider } from "../domain/types/crawling";
+import { logger } from "../log/index";
+import * as util from "../util/index";
+import { instance as fqxsOrg } from "./crawling/fqxs-org";
+import { instance as qidian } from "./crawling/qidian-com";
+import { instance as x23usComProvider } from "./crawling/x23us-com";
 import {
   RemoteSource,
   RemoteSources,
   SourceLiteral,
 } from "../domain/resource-info";
-import { Result } from "../domain/result";
-import { ResourceProvider } from "../domain/types/crawling";
-import { logger } from "../log/index";
-import * as util from "../util/index";
 
 /**
  * 处理数据源抛出的异常。如果错误是数据源主动抛出（Error.name等于数据源的名称）则打印错
@@ -274,6 +275,8 @@ export class BookService {
         return x23usComProvider;
       case SourceLiteral.Qidian:
         return qidian;
+      case SourceLiteral.FqxsOrg:
+        return fqxsOrg;
       case SourceLiteral.Default:
       default:
         return noDefault ? null : qidian;
