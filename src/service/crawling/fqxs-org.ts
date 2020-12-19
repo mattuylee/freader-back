@@ -17,7 +17,7 @@ export class FqxsOrg implements ResourceProvider {
   async search(keyword: string, _: never) {
     const response = (await superAgent
       .post("http://www.fqxs.org/modules/article/search.php")
-      .timeout({ deadline: 30000 })
+      .timeout({ response: 20000, deadline: 60000 })
       .set("Content-Type", "application/x-www-form-urlencoded")
       .send({ keyword })
       .catch((e) => logger.error(e && e.message))) as superAgent.Response;
@@ -77,7 +77,7 @@ export class FqxsOrg implements ResourceProvider {
     }
     const response = (await superAgent
       .get("http://m.fqxs.org/book/" + info.data)
-      .timeout(10000)) as superAgent.Response;
+      .timeout({ response: 20000, deadline: 60000 })) as superAgent.Response;
     if (!response.ok || !response.text) {
       this.throwError("数据源异常", "请求失败", "detail");
     }
@@ -123,7 +123,7 @@ export class FqxsOrg implements ResourceProvider {
     }
     const response = (await superAgent
       .get("http://m.fqxs.org/book/" + info.data + "/all.html")
-      .timeout(30000)) as superAgent.Response;
+      .timeout({ response: 20000, deadline: 60000 })) as superAgent.Response;
     if (!response.ok || !response.text) {
       this.throwError("数据源异常", "请求失败", "catelog");
     }
@@ -152,7 +152,7 @@ export class FqxsOrg implements ResourceProvider {
   async chapter(bid: string, cid: string, info: ResourceInformation) {
     const response = (await superAgent
       .get("http://m.fqxs.org/html/" + info.data)
-      .timeout(15000)) as superAgent.Response;
+      .timeout(30000)) as superAgent.Response;
     if (!response.ok || !response.text) {
       this.throwError("数据源异常", "请求失败", "chapter");
     }

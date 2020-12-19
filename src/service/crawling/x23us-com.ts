@@ -31,7 +31,7 @@ export class X23usCom implements ResourceProvider {
     const response = (await superAgent
       .post(base + "/modules/article/search.php")
       .type("form")
-      .timeout({ deadline: 30000 })
+      .timeout({ response: 20000, deadline: 60000 })
       .send({
         searchtype: "articlename",
         searchkey: kw,
@@ -98,7 +98,7 @@ export class X23usCom implements ResourceProvider {
     }
     let response = (await superAgent
       .get(base + path.posix.join("/book/", info.data))
-      .timeout({ deadline: 30000 })
+      .timeout({ response: 20000, deadline: 60000 })
       .buffer(true)
       ["charset"]("gbk")
       .catch((e) => logger.error(e))) as superAgent.Response;
@@ -152,9 +152,7 @@ export class X23usCom implements ResourceProvider {
   async catalog(bid: string, info: ResourceInformation) {
     let response = (await superAgent
       .get(base + path.posix.join("/book/", info.data))
-      .timeout({
-        deadline: 30000,
-      })
+      .timeout({ response: 20000, deadline: 60000 })
       .buffer(true)
       ["charset"]("gbk")
       .catch((e) => logger.error(e))) as superAgent.Response;
@@ -192,9 +190,7 @@ export class X23usCom implements ResourceProvider {
   async chapter(bid: string, cid: string, info: ResourceInformation) {
     let response = (await superAgent
       .get(base + path.posix.join("/book/", info.data))
-      .timeout({
-        deadline: 30000,
-      })
+      .timeout({ response: 20000, deadline: 60000 })
       .buffer(true)
       ["charset"]("gbk")
       .catch((e) => logger.error(e))) as superAgent.Response;
