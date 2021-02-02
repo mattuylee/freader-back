@@ -1,9 +1,9 @@
-import { instance as userDao } from "../dao/user";
-import { UserConfig } from "../domain/config";
+import * as jwt from "../util/jwt";
+import * as util from "../util/index";
 import { Result } from "../domain/result";
 import { User, UserGroup } from "../domain/user";
-import * as util from "../util/index";
-import * as jwt from "../util/jwt";
+import { UserConfig } from "../domain/config";
+import { instance as userDao } from "../dao/user";
 
 /**
  * 用户验证相关的逻辑
@@ -45,6 +45,7 @@ export class UserService {
         return result;
       }
       result.token = jwt.jwtCreateToken(
+        uid,
         jwt.jwtSecret(uid, user.password, user.salt)
       );
     } else {
